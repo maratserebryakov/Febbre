@@ -192,7 +192,7 @@
       { it: 'Dimmelo se', ru: 'Скажи мне, если' },
       { it: 'Ciò che provi è solo febbre', ru: 'То, что ты чувствуешь — всего лишь лихорадка' },
       { it: 'Che sale e scende', ru: 'Которая поднимается и спадает' },
-      { it: 'Che mi fa male, male', ru: 'Которая делает мне больно, больно' },
+      { it: 'Che mi fa male, male', ru: 'Которое делает мне больно, больно' },
       { it: 'I tuoi occhi blu Klein', ru: 'Твои синие глаза Кляйна' },
       { it: 'Dicono che', ru: 'Говорят, что' },
       { it: 'Stanotte è solo febbre', ru: 'Этой ночью — всего лишь лихорадка' },
@@ -207,7 +207,6 @@
       { it: 'Per te che non vuoi scendere', ru: 'Для тебя, кто не хочет спускаться' },
       { it: 'Come la febbre', ru: 'Как лихорадка' }
   ];
-
 
   const YADISK_PUBLIC_LINK = 'https://disk.yandex.ru/i/qi3_JYRI_IBLeg';
 
@@ -236,8 +235,6 @@
   }
 
   async function startDownload() {
-    // Без новых окон: запускаем скачивание через прямую ссылку.
-    // Фолбэк: открываем публичную страницу в этой же вкладке.
     const btn = document.getElementById("downloadBtn");
     if (btn) btn.disabled = true;
     try {
@@ -256,12 +253,15 @@
     }
   }
 
-
-
   const vid = document.getElementById("vid");
   const nowEl = document.getElementById("now");
   const fileLabel = document.getElementById("fileLabel");
   const filePick = document.getElementById("filePick");
+
+  // Чтобы storageKey() и экспорт всегда знали "текущий файл" по умолчанию
+  if (fileLabel && !fileLabel.dataset.fileKey) {
+    fileLabel.dataset.fileKey = "febbre.mp4";
+  }
 
   let uiTimer = null;
   let segTimer = null;
@@ -306,7 +306,6 @@
     stopSegmentPlayback();
   };
 
-
   // Кнопка "Скачать"
   const downloadBtn = document.getElementById("downloadBtn");
   if (downloadBtn) downloadBtn.onclick = startDownload;
@@ -343,11 +342,62 @@
   }
 
   let segments = loadSegments();
-  if (!Array.isArray(segments)) segments = [];
-  for (let i=0; i<LINES.length; i++) {
-    if (!segments[i]) segments[i] = { start: null, end: null, learned: false };
-    if (typeof segments[i].learned !== "boolean") segments[i].learned = false;
+
+  function normalizeSegmentsInPlace() {
+    if (!Array.isArray(segments)) segments = [];
+    for (let i = 0; i < LINES.length; i++) {
+      if (!segments[i]) segments[i] = { start: null, end: null, learned: false };
+      if (typeof segments[i].learned !== "boolean") segments[i].learned = false;
+
+      const s = segments[i].start;
+      const e = segments[i].end;
+      segments[i].start = (Number.isFinite(Number(s)) ? Number(s) : null);
+      segments[i].end   = (Number.isFinite(Number(e)) ? Number(e) : null);
+    }
   }
+
+  function hasAnyTimings(arr) {
+    return Array.isArray(arr) && arr.some(x => x && (x.start !== null || x.end !== null || x.learned === true));
+  }
+
+  // Унифицированный импорт (используем и для кнопки "Импорт", и для автозагрузки)
+  function importFromObject(obj, { silent = false } = {}) {
+    if (!obj) throw new Error("Пустой JSON");
+
+    // Поддержка двух форматов:
+    // 1) { segments: [...] }  (как твой экспорт)
+    // 2) просто массив [...]  (если захочешь упростить файл)
+    const incoming = Array.isArray(obj) ? obj : obj.segments;
+
+    if (!Array.isArray(incoming)) throw new Error("В JSON нет массива segments (или JSON не массив)");
+
+    segments = incoming.slice(0, LINES.length);
+    normalizeSegmentsInPlace();
+    saveSegments(segments);
+
+    if (!silent) alert("Импортировано ✅");
+  }
+
+  async function autoImportFebbreJsonIfNeeded() {
+    // Не перетираем уже сохранённые тайминги
+    const alreadyHave = hasAnyTimings(loadSegments());
+    if (alreadyHave) return;
+
+    try {
+      const res = await fetch("febbre.json", { cache: "no-store" });
+      if (!res.ok) return;
+
+      const obj = await res.json();
+      importFromObject(obj, { silent: true });
+
+      console.info("[FEBBRE] Автоматически применён febbre.json");
+    } catch (e) {
+      // Тихо игнорируем (нет файла рядом / fetch заблокирован / битый JSON)
+      console.warn("[FEBBRE] febbre.json не применён:", e);
+    }
+  }
+
+  normalizeSegmentsInPlace();
 
   const rowsEl = document.getElementById("rows");
   let showLearned = true;
@@ -356,6 +406,15 @@
     if (v === null || v === undefined || v === "") return "";
     const n = Number(v);
     return Number.isFinite(n) ? n.toFixed(2) : "";
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
   }
 
   function renderRows() {
@@ -442,16 +501,13 @@
     });
   }
 
-  function escapeHtml(str) {
-    return String(str)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
-
-  renderRows();
+  // Boot: пытаемся автоимпортировать febbre.json (если таймингов ещё нет), затем рендерим
+  (async function boot() {
+    await autoImportFebbreJsonIfNeeded();
+    segments = loadSegments();
+    normalizeSegmentsInPlace();
+    renderRows();
+  })();
 
   filePick.addEventListener("change", () => {
     const f = filePick.files && filePick.files[0];
@@ -461,11 +517,7 @@
     fileLabel.dataset.fileKey = f.name;
 
     segments = loadSegments();
-    if (!Array.isArray(segments)) segments = [];
-    for (let i=0; i<LINES.length; i++) {
-      if (!segments[i]) segments[i] = { start: null, end: null, learned: false };
-      if (typeof segments[i].learned !== "boolean") segments[i].learned = false;
-    }
+    normalizeSegmentsInPlace();
     renderRows();
 
     const url = URL.createObjectURL(f);
@@ -478,11 +530,7 @@
     fileLabel.dataset.fileKey = "febbre.mp4";
 
     segments = loadSegments();
-    if (!Array.isArray(segments)) segments = [];
-    for (let i=0; i<LINES.length; i++) {
-      if (!segments[i]) segments[i] = { start: null, end: null, learned: false };
-      if (typeof segments[i].learned !== "boolean") segments[i].learned = false;
-    }
+    normalizeSegmentsInPlace();
     renderRows();
 
     vid.src = "febbre.mp4";
@@ -555,18 +603,13 @@
       alert("Не получилось разобрать JSON.");
       return;
     }
-    if (!obj || !Array.isArray(obj.segments)) {
-      alert("В JSON нет массива segments.");
-      return;
+
+    try {
+      importFromObject(obj, { silent: false });
+      renderRows();
+    } catch (e) {
+      alert(e.message || "Ошибка импорта.");
     }
-    segments = obj.segments.slice(0, LINES.length);
-    for (let i=0; i<LINES.length; i++) {
-      if (!segments[i]) segments[i] = { start: null, end: null, learned: false };
-      if (typeof segments[i].learned !== "boolean") segments[i].learned = false;
-    }
-    saveSegments(segments);
-    renderRows();
-    alert("Импортировано ✅");
   };
 </script>
 </body>
