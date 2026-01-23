@@ -6,7 +6,14 @@
   <title>FEBBRE — Учим перевод по фрагментам (MP4)</title>
   <style>
     :root { color-scheme: dark; }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 18px; background:#0f0f12; color:#eaeaf0; }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      margin: 18px;
+      background:#0f0f12;
+      color:#eaeaf0;
+    }
+
     h1 { margin: 0 0 6px; color:#c084fc; font-size: 22px; }
     .hint { margin: 0 0 14px; color:#a1a1aa; line-height: 1.35; }
 
@@ -17,7 +24,77 @@
     .playerWrap { position: sticky; top: 10px; }
     @media (max-width: 980px){ .playerWrap{ position: static; } }
 
+    /* Видео */
     video { width: 100%; border-radius: 12px; background:#000; }
+
+    /* Обёртка вокруг видео: нужна для docking/sticky */
+    .videoDock {
+      position: relative;
+      border-radius: 12px;
+    }
+    .videoDockSentinel {
+      height: 0px; /* заполняется JS при docking */
+    }
+
+    /* Портрет на мобильных: при скролле видео "упирается" в верх и становится фиксированным.
+       Всё ниже продолжает скроллиться под ним (видео перекрывает контент). */
+    @media (max-width: 980px) and (orientation: portrait) {
+      .videoDock.isDocked {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 120;
+
+        background: #15151b;
+        border-bottom: 1px solid #2a2a35;
+
+        /* чтобы совпадало с общими отступами страницы */
+        padding: 10px 18px;
+        box-sizing: border-box;
+      }
+
+      .videoDock.isDocked video {
+        width: 100%;
+        height: auto;
+        max-height: 46vh; /* чтобы не занимало весь экран */
+        object-fit: contain;
+      }
+    }
+
+    /* Ландшафт на мобильных:
+       - экран делится на 2 колонки;
+       - левая панель (до нижней границы видео и вообще весь контент левой панели) скроллится отдельно;
+       - правая (большая) скроллится отдельно;
+       - общий скролл страницы отключаем. */
+    @media (max-width: 980px) and (orientation: landscape) {
+      body {
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .layout {
+        grid-template-columns: 0.95fr 1.45fr; /* правая больше */
+        height: calc(100vh - 36px); /* margin body: 18px сверху/снизу */
+      }
+
+      .panel {
+        height: 100%;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .playerWrap { position: static; top: auto; }
+
+      /* Видео остаётся видимым вверху левой панели при её скролле */
+      .videoDock {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #15151b;
+        padding-top: 0;
+      }
+    }
 
     .row { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 12px; border-radius: 12px; background:#111118; border:1px solid #242432; margin-bottom: 10px; }
     .it { font-size: 16px; }
@@ -67,7 +144,6 @@
         0 0 0 1px rgba(0,0,0,0.35);
       flex: 0 0 auto;
     }
-
     .mixerLamp__led {
       width: 12px;
       height: 12px;
@@ -77,7 +153,6 @@
         inset 0 1px 2px rgba(255,255,255,0.15),
         inset 0 -2px 4px rgba(0,0,0,0.55);
     }
-
     .mixerLamp.is-red .mixerLamp__led {
       background: radial-gradient(circle at 35% 35%, #ffd1d1 0%, #ff3b3b 25%, #b40000 70%, #5a0000 100%);
       box-shadow:
@@ -86,7 +161,6 @@
         inset 0 1px 2px rgba(255,255,255,0.22),
         inset 0 -2px 5px rgba(0,0,0,0.55);
     }
-
     .mixerLamp.is-green .mixerLamp__led {
       background: radial-gradient(circle at 35% 35%, #d7ffe8 0%, #2cff7a 25%, #0a8a3b 70%, #05461f 100%);
       box-shadow:
@@ -95,7 +169,6 @@
         inset 0 1px 2px rgba(255,255,255,0.22),
         inset 0 -2px 5px rgba(0,0,0,0.55);
     }
-
     .mixerLamp.is-gray .mixerLamp__led {
       background: radial-gradient(circle at 35% 35%, #ffffff22 0%, #a1a1aa55 30%, #3a3a4566 80%, #101018 100%);
       box-shadow:
@@ -140,10 +213,14 @@
         <button class="bad" id="stop">Стоп ⏸</button>
       </div>
 
-      <video id="vid" controls preload="metadata">
-        <source id="defaultSrc" src="febbre.mp4" type="video/mp4" />
-        Ваш браузер не поддерживает HTML5 video.
-      </video>
+      <!-- Сентинел + док: нужны для "упирания" видео в верх и фиксирования в портрете -->
+      <div id="videoDockSentinel" class="videoDockSentinel" aria-hidden="true"></div>
+      <div id="videoDock" class="videoDock">
+        <video id="vid" controls preload="metadata">
+          <source id="defaultSrc" src="febbre.mp4" type="video/mp4" />
+          Ваш браузер не поддерживает HTML5 video.
+        </video>
+      </div>
 
       <div class="sep"></div>
 
@@ -299,6 +376,8 @@
   const srcLabel = document.getElementById("srcLabel");
   const srcLamp = document.getElementById("srcLamp");
   const filePick = document.getElementById("filePick");
+  const videoDock = document.getElementById("videoDock");
+  const videoDockSentinel = document.getElementById("videoDockSentinel");
 
   // Чтобы storageKey() и экспорт всегда знали "текущий файл" по умолчанию
   if (fileLabel && !fileLabel.dataset.fileKey) {
@@ -321,9 +400,57 @@
     }
   }
 
-  // По умолчанию: пытаемся использовать febbre.mp4 рядом/по сети
+  // По умолчанию считаем, что используется febbre.mp4 рядом/по сети
   setSourceUi("server");
 
+  // Docking видео в портрете (моб.)
+  function isPortraitMobile() {
+    return window.matchMedia("(max-width: 980px) and (orientation: portrait)").matches;
+  }
+
+  function undockVideo() {
+    if (!videoDock || !videoDockSentinel) return;
+    videoDock.classList.remove("isDocked");
+    videoDockSentinel.style.height = "0px";
+  }
+
+  function dockVideo() {
+    if (!videoDock || !videoDockSentinel) return;
+    if (videoDock.classList.contains("isDocked")) return;
+
+    const h = videoDock.getBoundingClientRect().height;
+    videoDockSentinel.style.height = `${Math.ceil(h)}px`;
+    videoDock.classList.add("isDocked");
+  }
+
+  function updateVideoDock() {
+    if (!videoDock || !videoDockSentinel) return;
+
+    // В ландшафте/на десктопе docking отключаем
+    if (!isPortraitMobile()) {
+      undockVideo();
+      return;
+    }
+
+    // Сентинел остаётся в потоке. Как только он "упирается" в верх окна — фиксируем видео.
+    const r = videoDockSentinel.getBoundingClientRect();
+    const shouldDock = r.top <= 0;
+
+    if (shouldDock) dockVideo();
+    else undockVideo();
+  }
+
+  window.addEventListener("scroll", updateVideoDock, { passive: true });
+  window.addEventListener("resize", () => {
+    // При ресайзе/повороте пересчитаем высоту плейсхолдера если уже docked
+    if (videoDock && videoDock.classList.contains("isDocked")) {
+      const h = videoDock.getBoundingClientRect().height;
+      if (videoDockSentinel) videoDockSentinel.style.height = `${Math.ceil(h)}px`;
+    }
+    updateVideoDock();
+  }, { passive: true });
+
+  // Тикер
   let uiTimer = null;
   let segTimer = null;
 
@@ -367,7 +494,7 @@
     stopSegmentPlayback();
   };
 
-  // Кнопка "Скачать" — просто открыть в отдельном окне
+  // "Скачать" — открыть в отдельном окне
   const downloadBtn = document.getElementById("downloadBtn");
   if (downloadBtn) downloadBtn.onclick = openDownloadInNewWindow;
 
@@ -560,6 +687,9 @@
     segments = loadSegments();
     normalizeSegmentsInPlace();
     renderRows();
+
+    // После первого рендера сразу проверим docking (на случай, если загрузили страницу не с самого верха)
+    updateVideoDock();
   })();
 
   filePick.addEventListener("change", () => {
@@ -577,33 +707,8 @@
     vid.src = url;
     vid.load();
 
-    setSourceUiFromLocal();
+    setSourceUi("local");
   });
-
-  function setSourceUiFromLocal() {
-    setSourceUiSafe("local");
-  }
-
-  function setSourceUiSafe(kind) {
-    // Обёртка на случай, если элементов нет
-    try { setSourceUi(kind); } catch {}
-  }
-
-  // Переиспользуем твой setSourceUi (выше) без переопределения:
-  // (просто вызываем его безопасно)
-  function setSourceUi(kind) {
-    if (srcLabel) {
-      if (kind === "local") srcLabel.textContent = "локальный (выбранный файл)";
-      else if (kind === "server") srcLabel.textContent = "сервер (интернет)";
-      else srcLabel.textContent = "неизвестно";
-    }
-    if (srcLamp) {
-      srcLamp.classList.remove("is-red", "is-green", "is-gray");
-      if (kind === "local") srcLamp.classList.add("is-green");
-      else if (kind === "server") srcLamp.classList.add("is-red");
-      else srcLamp.classList.add("is-gray");
-    }
-  }
 
   document.getElementById("useDefault").onclick = () => {
     fileLabel.textContent = "febbre.mp4";
@@ -616,7 +721,7 @@
     vid.src = "febbre.mp4";
     vid.load();
 
-    setSourceUiSafe("server");
+    setSourceUi("server");
   };
 
   document.getElementById("saveAll").onclick = () => {
