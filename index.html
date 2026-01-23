@@ -62,6 +62,7 @@
     <div class="panel playerWrap">
       <div class="topbar">
         <div class="chip"><b>Файл:</b> <span id="fileLabel">febbre.mp4 (если рядом)</span></div>
+        <div class="chip"><b>Источник:</b> <span id="srcLabel">сервер/рядом</span></div>
         <div class="chip"><b>Текущее:</b> <span id="now">0.00</span>s</div>
         <button class="ghost" id="copyNow">Скопировать текущее</button>
       </div>
@@ -121,91 +122,91 @@
 
 <script>
   const LINES = [
-      { it: 'Ti sei preso una parte di me', ru: 'Ты забрал часть меня' },
-      { it: 'Quella ancora più in fondo dell’anima', ru: 'Ту, что ещё глубже в душе' },
-      { it: 'Un sentimento', ru: 'Чувство' },
-      { it: 'Che se si rompe taglia', ru: 'Которое, если ломается, режет' },
-      { it: 'Come il vetro', ru: 'Как стекло' },
-      { it: 'E anche deludere', ru: 'И даже разочаровывать' },
-      { it: 'È un’abitudine', ru: 'Это привычка' },
-      { it: 'Come nel mio primo giorno di scuola', ru: 'Как в мой первый день в школе' },
-      { it: 'Non so che faccio qui', ru: 'Я не знаю, что делаю здесь' },
-      { it: 'Il buio è tagliato dalle luci viola', ru: 'Темнота разрезана фиолетовыми огнями' },
-      { it: 'Il cielo fa come un glitch', ru: 'Небо будто глючит' },
-      { it: 'Tu mi guardi dall’alto', ru: 'Ты смотришь на меня сверху' },
-      { it: 'Trascinandomi in basso', ru: 'Утаскивая меня вниз' },
-      { it: 'Non ascolti quando grido', ru: 'Ты не слышишь, когда я кричу' },
-      { it: 'Sembri fatto di ghiaccio', ru: 'Ты будто сделан изо льда' },
-      { it: 'Io sono fatta così', ru: 'Я такая' },
-      { it: 'Alle feste chic', ru: 'На гламурных вечеринках' },
-      { it: 'Sola su un terrazzo', ru: 'Одна на террасе' },
-      { it: 'Tutti fanno bling bling', ru: 'Все сверкают' },
-      { it: 'Io nemmeno mi piaccio', ru: 'Мне даже я сама не нравлюсь' },
-      { it: 'Non dire je t’aime', ru: 'Не говори «je t’aime»' },
-      { it: 'Dimmelo se', ru: 'Скажи мне, если' },
-      { it: 'Ciò che provi è solo febbre', ru: 'То, что ты чувствуешь — всего лишь лихорадка' },
-      { it: 'Che sale e scende', ru: 'Которая поднимается и спадает' },
-      { it: 'Che mi fa male, male', ru: 'Которая делает мне больно, больно' },
-      { it: 'I tuoi occhi blu Klein', ru: 'Твои синие глаза Кляйна' },
-      { it: 'Dicono che', ru: 'Говорят, что' },
-      { it: 'Stanotte è solo febbre', ru: 'Этой ночью — всего лишь лихорадка' },
-      { it: 'Che sale e scende', ru: 'Которая приходит и уходит' },
-      { it: 'Tu prendi me', ru: 'Ты берёшь меня' },
-      { it: 'Come un enfant per strada', ru: 'Как ребёнка на улице' },
-      { it: 'In abito da gala', ru: 'В вечернем платье' },
-      { it: 'Non ci amerà la fama', ru: 'Слава нас не полюбит' },
-      { it: 'Non cambierà la trama', ru: 'Сюжет не изменится' },
-      { it: 'Mille lune passeranno', ru: 'Пройдут тысячи лун' },
-      { it: 'E una ci sarà per sempre', ru: 'И одна останется навсегда' },
-      { it: 'Per te che non vuoi scendere', ru: 'Для тебя, кто не хочет спускаться' },
-      { it: 'Come la febbre', ru: 'Как лихорадка' },
-      { it: 'Ti sei preso una parte di me', ru: 'Ты забрал часть меня' },
-      { it: 'Quella ancora più in fondo dell’anima', ru: 'Ту, что ещё глубже в душе' },
-      { it: 'Un sentimento', ru: 'Чувство' },
-      { it: 'Che se si rompe taglia', ru: 'Которое, если ломается, режет' },
-      { it: 'Come il vetro', ru: 'Как стекло' },
-      { it: 'Corro, corro come dentro un bosco', ru: 'Я бегу, бегу, как по лесу' },
-      { it: 'Dentro questo inferno è più difficile', ru: 'В этом аду всё сложнее' },
-      { it: 'Questo amore dimmi quanto costa', ru: 'Скажи, сколько стоит эта любовь' },
-      { it: 'Ti senti un’ombra qua vicino a me', ru: 'Ты чувствуешь себя тенью рядом со мной' },
-      { it: 'Non ascolti quando grido', ru: 'Ты не слышишь, когда я кричу' },
-      { it: 'E nemmeno se taccio', ru: 'Даже когда я молчу' },
-      { it: 'Non ascolti quando grido', ru: 'Ты не слышишь, когда я кричу' },
-      { it: 'Non dire je t’aime', ru: 'Не говори «je t’aime»' },
-      { it: 'Dimmelo se', ru: 'Скажи мне, если' },
-      { it: 'Ciò che provi è solo febbre', ru: 'То, что ты чувствуешь — всего лишь лихорадка' },
-      { it: 'Che sale e scende', ru: 'Которая поднимается и спадает' },
-      { it: 'Che mi fa male, male', ru: 'Которая делает мне больно, больно' },
-      { it: 'I tuoi occhi blu Klein', ru: 'Твои синие глаза Кляйна' },
-      { it: 'Dicono che', ru: 'Говорят, что' },
-      { it: 'Stanotte è solo febbre', ru: 'Этой ночью — всего лишь лихорадка' },
-      { it: 'Che sale e scende', ru: 'Которая приходит и уходит' },
-      { it: 'Tu prendi me', ru: 'Ты берёшь меня' },
-      { it: 'Come un enfant per strada', ru: 'Как ребёнка на улице' },
-      { it: 'In abito da gala', ru: 'В вечернем платье' },
-      { it: 'Non ci amerà la fama', ru: 'Слава нас не полюбит' },
-      { it: 'Non cambierà la trama', ru: 'Сюжет не изменится' },
-      { it: 'Mille lune passeranno', ru: 'Пройдут тысячи лун' },
-      { it: 'E una ci sarà per sempre', ru: 'И одна останется навсегда' },
-      { it: 'Per te che non vuoi scendere…', ru: 'Для тебя, кто не хочет спускаться…' },
-      { it: 'Non dire je t’aime', ru: 'Не говори «je t’aime»' },
-      { it: 'Dimmelo se', ru: 'Скажи мне, если' },
-      { it: 'Ciò che provi è solo febbre', ru: 'То, что ты чувствуешь — всего лишь лихорадка' },
-      { it: 'Che sale e scende', ru: 'Которая поднимается и спадает' },
-      { it: 'Che mi fa male, male', ru: 'Которое делает мне больно, больно' },
-      { it: 'I tuoi occhi blu Klein', ru: 'Твои синие глаза Кляйна' },
-      { it: 'Dicono che', ru: 'Говорят, что' },
-      { it: 'Stanotte è solo febbre', ru: 'Этой ночью — всего лишь лихорадка' },
-      { it: 'Che poi ti prende…', ru: 'Которая потом захватывает тебя…' },
-      { it: 'Come la febbre', ru: 'Как лихорадка' },
-      { it: 'Come un enfant per strada', ru: 'Как ребёнок на улице' },
-      { it: 'In abito da gala', ru: 'В вечернем платье' },
-      { it: 'Non ci amerà la fama', ru: 'Слава нас не полюбит' },
-      { it: 'Non cambierà la trama', ru: 'Сюжет не изменится' },
-      { it: 'Mille lune passeranno', ru: 'Пройдут тысячи лун' },
-      { it: 'E una ci sarà per sempre', ru: 'И одна останется навсегда' },
-      { it: 'Per te che non vuoi scendere', ru: 'Для тебя, кто не хочет спускаться' },
-      { it: 'Come la febbre', ru: 'Как лихорадка' }
+    { it: 'Ti sei preso una parte di me', ru: 'Ты забрал часть меня' },
+    { it: 'Quella ancora più in fondo dell’anima', ru: 'Ту, что ещё глубже в душе' },
+    { it: 'Un sentimento', ru: 'Чувство' },
+    { it: 'Che se si rompe taglia', ru: 'Которое, если ломается, режет' },
+    { it: 'Come il vetro', ru: 'Как стекло' },
+    { it: 'E anche deludere', ru: 'И даже разочаровывать' },
+    { it: 'È un’abitudine', ru: 'Это привычка' },
+    { it: 'Come nel mio primo giorno di scuola', ru: 'Как в мой первый день в школе' },
+    { it: 'Non so che faccio qui', ru: 'Я не знаю, что делаю здесь' },
+    { it: 'Il buio è tagliato dalle luci viola', ru: 'Темнота разрезана фиолетовыми огнями' },
+    { it: 'Il cielo fa come un glitch', ru: 'Небо будто глючит' },
+    { it: 'Tu mi guardi dall’alto', ru: 'Ты смотришь на меня сверху' },
+    { it: 'Trascinandomi in basso', ru: 'Утаскивая меня вниз' },
+    { it: 'Non ascolti quando grido', ru: 'Ты не слышишь, когда я кричу' },
+    { it: 'Sembri fatto di ghiaccio', ru: 'Ты будто сделан изо льда' },
+    { it: 'Io sono fatta così', ru: 'Я такая' },
+    { it: 'Alle feste chic', ru: 'На гламурных вечеринках' },
+    { it: 'Sola su un terrazzo', ru: 'Одна на террасе' },
+    { it: 'Tutti fanno bling bling', ru: 'Все сверкают' },
+    { it: 'Io nemmeno mi piaccio', ru: 'Мне даже я сама не нравлюсь' },
+    { it: 'Non dire je t’aime', ru: 'Не говори «je t’aime»' },
+    { it: 'Dimmelo se', ru: 'Скажи мне, если' },
+    { it: 'Ciò che provi è solo febbre', ru: 'То, что ты чувствуешь — всего лишь лихорадка' },
+    { it: 'Che sale e scende', ru: 'Которая поднимается и спадает' },
+    { it: 'Che mi fa male, male', ru: 'Которая делает мне больно, больно' },
+    { it: 'I tuoi occhi blu Klein', ru: 'Твои синие глаза Кляйна' },
+    { it: 'Dicono che', ru: 'Говорят, что' },
+    { it: 'Stanotte è solo febbre', ru: 'Этой ночью — всего лишь лихорадка' },
+    { it: 'Che sale e scende', ru: 'Которая приходит и уходит' },
+    { it: 'Tu prendi me', ru: 'Ты берёшь меня' },
+    { it: 'Come un enfant per strada', ru: 'Как ребёнка на улице' },
+    { it: 'In abito da gala', ru: 'В вечернем платье' },
+    { it: 'Non ci amerà la fama', ru: 'Слава нас не полюбит' },
+    { it: 'Non cambierà la trama', ru: 'Сюжет не изменится' },
+    { it: 'Mille lune passeranno', ru: 'Пройдут тысячи лун' },
+    { it: 'E una ci sarà per sempre', ru: 'И одна останется навсегда' },
+    { it: 'Per te che non vuoi scendere', ru: 'Для тебя, кто не хочет спускаться' },
+    { it: 'Come la febbre', ru: 'Как лихорадка' },
+    { it: 'Ti sei preso una parte di me', ru: 'Ты забрал часть меня' },
+    { it: 'Quella ancora più in fondo dell’anima', ru: 'Ту, что ещё глубже в душе' },
+    { it: 'Un sentimento', ru: 'Чувство' },
+    { it: 'Che se si rompe taglia', ru: 'Которое, если ломается, режет' },
+    { it: 'Come il vetro', ru: 'Как стекло' },
+    { it: 'Corro, corro come dentro un bosco', ru: 'Я бегу, бегу, как по лесу' },
+    { it: 'Dentro questo inferno è più difficile', ru: 'В этом аду всё сложнее' },
+    { it: 'Questo amore dimmi quanto costa', ru: 'Скажи, сколько стоит эта любовь' },
+    { it: 'Ti senti un’ombra qua vicino a me', ru: 'Ты чувствуешь себя тенью рядом со мной' },
+    { it: 'Non ascolti quando grido', ru: 'Ты не слышишь, когда я кричу' },
+    { it: 'E nemmeno se taccio', ru: 'Даже когда я молчу' },
+    { it: 'Non ascolti quando grido', ru: 'Ты не слышишь, когда я кричу' },
+    { it: 'Non dire je t’aime', ru: 'Не говори «je t’aime»' },
+    { it: 'Dimmelo se', ru: 'Скажи мне, если' },
+    { it: 'Ciò che provi è solo febbre', ru: 'То, что ты чувствуешь — всего лишь лихорадка' },
+    { it: 'Che sale e scende', ru: 'Которая поднимается и спадает' },
+    { it: 'Che mi fa male, male', ru: 'Которая делает мне больно, больно' },
+    { it: 'I tuoi occhi blu Klein', ru: 'Твои синие глаза Кляйна' },
+    { it: 'Dicono che', ru: 'Говорят, что' },
+    { it: 'Stanotte è solo febbre', ru: 'Этой ночью — всего лишь лихорадка' },
+    { it: 'Che sale e scende', ru: 'Которая приходит и уходит' },
+    { it: 'Tu prendi me', ru: 'Ты берёшь меня' },
+    { it: 'Come un enfant per strada', ru: 'Как ребёнка на улице' },
+    { it: 'In abito da gala', ru: 'В вечернем платье' },
+    { it: 'Non ci amerà la fama', ru: 'Слава нас не полюбит' },
+    { it: 'Non cambierà la trama', ru: 'Сюжет не изменится' },
+    { it: 'Mille lune passeranno', ru: 'Пройдут тысячи лун' },
+    { it: 'E una ci sarà per sempre', ru: 'И одна останется навсегда' },
+    { it: 'Per te che non vuoi scendere…', ru: 'Для тебя, кто не хочет спускаться…' },
+    { it: 'Non dire je t’aime', ru: 'Не говори «je t’aime»' },
+    { it: 'Dimmelo se', ru: 'Скажи мне, если' },
+    { it: 'Ciò che provi è solo febbre', ru: 'То, что ты чувствуешь — всего лишь лихорадка' },
+    { it: 'Che sale e scende', ru: 'Которая поднимается и спадает' },
+    { it: 'Che mi fa male, male', ru: 'Которая делает мне больно, больно' },
+    { it: 'I tuoi occhi blu Klein', ru: 'Твои синие глаза Кляйна' },
+    { it: 'Dicono che', ru: 'Говорят, что' },
+    { it: 'Stanotte è solo febbre', ru: 'Этой ночью — всего лишь лихорадка' },
+    { it: 'Che poi ti prende…', ru: 'Которая потом захватывает тебя…' },
+    { it: 'Come la febbre', ru: 'Как лихорадка' },
+    { it: 'Come un enfant per strada', ru: 'Как ребёнок на улице' },
+    { it: 'In abito da gala', ru: 'В вечернем платье' },
+    { it: 'Non ci amerà la fama', ru: 'Слава нас не полюбит' },
+    { it: 'Non cambierà la trama', ru: 'Сюжет не изменится' },
+    { it: 'Mille lune passeranno', ru: 'Пройдут тысячи лун' },
+    { it: 'E una ci sarà per sempre', ru: 'И одна останется навсегда' },
+    { it: 'Per te che non vuoi scendere', ru: 'Для тебя, кто не хочет спускаться' },
+    { it: 'Come la febbre', ru: 'Как лихорадка' }
   ];
 
   const YADISK_PUBLIC_LINK = 'https://disk.yandex.ru/i/qi3_JYRI_IBLeg';
@@ -225,43 +226,31 @@
     }
   }
 
-  async function getDirectYadiskHref(publicLink) {
-    const api = "https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=" + encodeURIComponent(publicLink);
-    const res = await fetch(api, { method: "GET" });
-    if (!res.ok) throw new Error("Yandex API error: " + res.status);
-    const data = await res.json();
-    if (!data || !data.href) throw new Error("No href in response");
-    return data.href;
-  }
-
-  async function startDownload() {
-    const btn = document.getElementById("downloadBtn");
-    if (btn) btn.disabled = true;
-    try {
-      const href = await getDirectYadiskHref(YADISK_PUBLIC_LINK);
-      const a = document.createElement("a");
-      a.href = href;
-      a.download = "";
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    } catch (e) {
-      location.href = YADISK_PUBLIC_LINK;
-    } finally {
-      if (btn) btn.disabled = false;
-    }
+  function openDownloadInNewWindow() {
+    window.open(YADISK_PUBLIC_LINK, "_blank", "noopener,noreferrer");
   }
 
   const vid = document.getElementById("vid");
   const nowEl = document.getElementById("now");
   const fileLabel = document.getElementById("fileLabel");
+  const srcLabel = document.getElementById("srcLabel");
   const filePick = document.getElementById("filePick");
 
   // Чтобы storageKey() и экспорт всегда знали "текущий файл" по умолчанию
   if (fileLabel && !fileLabel.dataset.fileKey) {
     fileLabel.dataset.fileKey = "febbre.mp4";
   }
+
+  function setSourceLabel(kind) {
+    // kind: "local" | "server" | "unknown"
+    if (!srcLabel) return;
+    if (kind === "local") srcLabel.textContent = "локальный (выбранный файл)";
+    else if (kind === "server") srcLabel.textContent = "сервер/рядом (febbre.mp4)";
+    else srcLabel.textContent = "неизвестно";
+  }
+
+  // По умолчанию считаем, что используется febbre.mp4 рядом (пока не выбрали файл)
+  setSourceLabel("server");
 
   let uiTimer = null;
   let segTimer = null;
@@ -306,9 +295,9 @@
     stopSegmentPlayback();
   };
 
-  // Кнопка "Скачать"
+  // Кнопка "Скачать" — просто открыть в отдельном окне
   const downloadBtn = document.getElementById("downloadBtn");
-  if (downloadBtn) downloadBtn.onclick = startDownload;
+  if (downloadBtn) downloadBtn.onclick = openDownloadInNewWindow;
 
   // Автодетект: если febbre.mp4 рядом недоступен — подсветим кнопку "Скачать"
   (function autoDetectDefaultFile() {
@@ -392,7 +381,6 @@
 
       console.info("[FEBBRE] Автоматически применён febbre.json");
     } catch (e) {
-      // Тихо игнорируем (нет файла рядом / fetch заблокирован / битый JSON)
       console.warn("[FEBBRE] febbre.json не применён:", e);
     }
   }
@@ -523,6 +511,8 @@
     const url = URL.createObjectURL(f);
     vid.src = url;
     vid.load();
+
+    setSourceLabel("local");
   });
 
   document.getElementById("useDefault").onclick = () => {
@@ -535,6 +525,8 @@
 
     vid.src = "febbre.mp4";
     vid.load();
+
+    setSourceLabel("server");
   };
 
   document.getElementById("saveAll").onclick = () => {
