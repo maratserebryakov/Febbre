@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru" data-catalog="data/catalog.json">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Песни — учим языки по фрагментам</title>
+  <link rel="stylesheet" href="assets/styles.css"/>
+</head>
+<body>
+  <h1>Песни — учим языки по фрагментам</h1>
+  <div class="hint">Каталог песен. Фильтр по языку + поиск. Найдено: <b id="count">0</b>.</div>
+
+  <div class="card" style="margin-bottom:12px;">
+    <div class="row">
+      <input id="q" placeholder="Поиск: Store Hav, Clara..." style="flex:1 1 240px; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.22); color:#eaeaf0"/>
+      <select id="langFilter" style="padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.22); color:#eaeaf0"></select>
+    </div>
+  </div>
+
+  <div id="songsList" class="songGrid"></div>
+
+  <div id="toast" class="toast"></div>
+  <script src="assets/app.js"></script>
+</body>
+</html>
