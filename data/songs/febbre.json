@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "song": {
+    "id": "febbre",
+    "title": "Febbre",
+    "artist": "Clara",
+    "language": "it",
+    "languageName": "Italiano",
+    "hint": "Заменишь этот JSON на свой (из Febbre-проекта).",
+    "media": {
+      "src": "febbre.mp4"
+    }
+  },
+  "ui": {
+    "showTranslationByDefault": true,
+    "showPhoneticByDefault": false,
+    "showWhyHeardByDefault": false
+  },
+  "items": []
+}
