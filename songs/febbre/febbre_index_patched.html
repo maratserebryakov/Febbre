@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FEBBRE — Учим перевод по фрагментам (MP4)</title>
+
+  <style>
+    :root { color-scheme: dark; }
+
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      margin: 18px;
+      background:#0f0f12;
+      color:#eaeaf0;
+    }
+
+    h1 { margin: 0 0 6px; color:#c084fc; font-size: 22px; }
+    .hint { margin: 0 0 14px; color:#a1a1aa; line-height: 1.35; }
+
+    .layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; align-items: start; }
+    @media (max-width: 980px){ .layout{ grid-template-columns: 1fr; } }
+
+    .panel { background:#15151b; border:1px solid #2a2a35; border-radius: 14px; padding: 12px; }
+    .playerWrap { position: sticky; top: 10px; }
+    @media (max-width: 980px){ .playerWrap{ position: static; } }
+
+    video { width: 100%; border-radius: 12px; background:#000; }
+
+    .videoDock { position: relative; border-radius: 12px; }
+    .videoDockSentinel { height: 0px; }
+
+    @media (max-width: 980px) and (orientation: portrait) {
+      .videoDock.isDocked {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 120;
+        background: #15151b;
+        border-bottom: 1px solid #2a2a35;
+        padding: 10px 18px;
+        box-sizing: border-box;
+      }
+      .videoDock.isDocked video {
+        width: 100%;
+        height: auto;
+        max-height: 46vh;
+        object-fit: contain;
+      }
+    }
+
+    /* mobile landscape: 2 независимых скролла */
+    @media (max-width: 980px) and (orientation: landscape) {
+      body{
+        margin: 0;
+        padding: 10px;
+        height: 100vh;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+
+      .layout{
+        grid-template-columns: 0.95fr 1.45fr;
+        height: 100%;
+      }
+
+      .panel{
+        height: 100%;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .playerWrap{ position: static; top: auto; }
+
+      .videoDock{
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background:#15151b;
+        padding-top: 0;
+      }
+
+      /* Шапка в этом режиме схлопывается, когда скроллят фразы */
+      #pageHeader{
+        overflow: hidden;
+        max-height: 240px;
+        opacity: 1;
+        transform: translateY(0);
+        transition: max-height 180ms ease, opacity 180ms ease, transform 180ms ease;
+        will-change: max-height, opacity, transform;
+      }
+      body.isFocusMode #pageHeader{
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-10px);
+        margin: 0;
+        padding: 0;
+        pointer-events: none;
+      }
+    }
+
+    .row{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 12px;
+      background:#111118;
+      border:1px solid #242432;
+      margin-bottom: 10px;
+    }
+    .it{ font-size: 16px; }
+    .ru{ display:none; color:#a1a1aa; }
+
+    .controls{ display:flex; flex-wrap: wrap; gap:8px; align-items:center; }
+
+    button{
+      border: 0;
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      background:#2d2d3a;
+      color:#eaeaf0;
+    }
+    button:hover{ filter: brightness(1.07); }
+
+    .primary{ background:#7c3aed; }
+    .good{ background:#10b981; color:#071b12; }
+    .warn{ background:#f59e0b; color:#1a1204; }
+    .bad{ background:#ef4444; color:#1f0505; }
+    .ghost{ background: transparent; border:1px solid #2a2a35; }
+
+    input[type="number"], textarea{
+      background:#0f0f12;
+      color:#eaeaf0;
+      border:1px solid #2a2a35;
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+    input[type="number"]{ width: 96px; }
+    textarea{ width: 100%; min-height: 110px; resize: vertical; }
+
+    .mini{ font-size: 12px; color:#a1a1aa; }
+    .topbar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom: 10px; }
+
+    .chip{
+      display:flex; gap:8px; align-items:center;
+      padding: 10px;
+      border:1px solid #2a2a35;
+      border-radius: 12px;
+      background:#111118;
+    }
+
+    .sep{ height:1px; background:#2a2a35; margin: 12px 0; }
+
+    .muted{ opacity:.6; }
+    .highlight{ box-shadow: 0 0 0 2px #f59e0b inset; }
+    .warnText{ color:#f59e0b; font-weight:600; }
+
+    .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 980px){ .grid2{ grid-template-columns: 1fr; } }
+
+    .mixerLamp{
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display:inline-flex; align-items:center; justify-content:center;
+      border: 1px solid #2a2a35;
+      background:
+        radial-gradient(closest-side, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.00) 62%),
+        radial-gradient(closest-side, #14141b 0%, #0b0b10 72%, #050509 100%);
+      box-shadow:
+        inset 0 2px 6px rgba(0,0,0,0.65),
+        inset 0 -2px 6px rgba(255,255,255,0.04),
+        0 0 0 1px rgba(0,0,0,0.35);
+      flex: 0 0 auto;
+    }
+    .mixerLamp__led{
+      width:12px; height:12px;
+      border-radius:50%;
+      background:#2a2a35;
+      box-shadow:
+        inset 0 1px 2px rgba(255,255,255,0.15),
+        inset 0 -2px 4px rgba(0,0,0,0.55);
+    }
+    .mixerLamp.is-red .mixerLamp__led{
+      background: radial-gradient(circle at 35% 35%, #ffd1d1 0%, #ff3b3b 25%, #b40000 70%, #5a0000 100%);
+      box-shadow: 0 0 8px rgba(255,48,48,0.85), 0 0 16px rgba(255,48,48,0.45),
+        inset 0 1px 2px rgba(255,255,255,0.22), inset 0 -2px 5px rgba(0,0,0,0.55);
+    }
+    .mixerLamp.is-green .mixerLamp__led{
+      background: radial-gradient(circle at 35% 35%, #d7ffe8 0%, #2cff7a 25%, #0a8a3b 70%, #05461f 100%);
+      box-shadow: 0 0 8px rgba(44,255,122,0.85), 0 0 16px rgba(44,255,122,0.45),
+        inset 0 1px 2px rgba(255,255,255,0.22), inset 0 -2px 5px rgba(0,0,0,0.55);
+    }
+    .mixerLamp.is-gray .mixerLamp__led{
+      background: radial-gradient(circle at 35% 35%, #ffffff22 0%, #a1a1aa55 30%, #3a3a4566 80%, #101018 100%);
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.10), inset 0 -2px 5px rgba(0,0,0,0.55);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="pageHeader">
+    <h1>🎵 FEBBRE — учим перевод по фрагментам (локальный MP4)</h1>
+    <p class="hint">
+      Быстрый старт: положи MP4 рядом с этим файлом и назови <b>febbre.mp4</b> — видео подхватится автоматически.
+      Или нажми «Выбрать MP4». Таймкоды сохраняются в браузере. Есть экспорт/импорт JSON.
+      <br><span class="mini">Важно: при открытии страницы обновление таймкодов всегда принудительно берётся из <b>data/songs/febbre.json</b> (или <b>febbre.json</b>, если рядом) — что найдётся первым.</span>
+    </p>
+  </div>
+
+  <div class="layout">
+    <div class="panel playerWrap">
+      <div class="topbar">
+        <div class="chip"><b>Файл:</b> <span id="fileLabel">febbre.mp4 (если рядом)</span></div>
+
+        <div class="chip">
+          <b>Источник:</b>
+          <span id="srcLabel">сервер (интернет)</span>
+          <span class="mixerLamp is-red" id="srcLamp" title="Источник файла">
+            <span class="mixerLamp__led"></span>
+          </span>
+        </div>
+
+        <div class="chip"><b>Текущее:</b> <span id="now">0.00</span>s</div>
+        <button class="ghost" id="copyNow">Скопировать текущее</button>
+      </div>
+
+      <div class="topbar">
+        <input id="filePick" type="file" accept="video/mp4,audio/mp4,video/*,audio/*" />
+        <button class="ghost" id="useDefault">Попробовать febbre.mp4</button>
+
+        <button class="ghost" id="downloadBtn">Скачать</button>
+        <span class="mini" id="downloadHint">Файл можно скачать с Яндекс Диска</span>
+
+        <button class="bad" id="stop">Стоп ⏸</button>
+      </div>
+
+      <div id="videoDockSentinel" class="videoDockSentinel" aria-hidden="true"></div>
+      <div id="videoDock" class="videoDock">
+        <video id="vid" controls preload="metadata">
+          <source id="defaultSrc" src="febbre.mp4" type="video/mp4" />
+          Ваш браузер не поддерживает HTML5 video.
+        </video>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="topbar">
+        <button class="primary" id="saveAll">💾 Сохранить всё</button>
+        <button class="ghost" id="toggleRuAll">Показать/скрыть переводы</button>
+        <button class="ghost" id="toggleLearned">Показать/скрыть выученные</button>
+        <button class="bad" id="resetTimes">Сбросить таймкоды</button>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <div class="mini" style="margin-bottom:6px;">Экспорт таймкодов (скопируй куда-нибудь):</div>
+          <textarea id="exportBox" placeholder="Нажми «Экспорт», появится JSON…"></textarea>
+          <div class="topbar" style="margin-top:8px;">
+            <button class="ghost" id="exportBtn">Экспорт</button>
+            <button class="ghost" id="copyExport">Скопировать JSON</button>
+          </div>
+        </div>
+        <div>
+          <div class="mini" style="margin-bottom:6px;">Импорт таймкодов (вставь JSON и нажми «Импорт»):</div>
+          <textarea id="importBox" placeholder='Вставь JSON сюда…'></textarea>
+          <div class="topbar" style="margin-top:8px;">
+            <input id="jsonPick" type="file" accept="application/json,.json" />
+            <button class="ghost" id="importBtn">Импорт</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini">
+        Совет: start можно ставить на 0.10–0.25 сек раньше начала фразы, end — на 0.10–0.25 сек позже.
+        Формат — секунды (можно дробные: 42.35).
+      </div>
+    </div>
+
+    <div class="panel" id="phrasesPanel">
+      <div id="rows"></div>
+    </div>
+  </div>
+
+<script>
+  \1
+
+  // Позволяем подхватить строки/переводы из нового JSON-формата (data/songs/febbre.json),
+  // чтобы FEBBRE был совместим с каталогом.
+  window.__FEBBRE_SET_LINES_FROM_JSON = function(items){
+    try{
+      if(!Array.isArray(items) || !items.length) return;
+      const rebuilt = items.map(x => ({
+        it: String(x.text || x.text_no_official || x.it || ""),
+        ru: String(x.translation || x.translation_ru || x.ru || "")
+      })).filter(x => x.it);
+      if(rebuilt.length){
+        LINES.length = 0;
+        rebuilt.forEach(x => LINES.push(x));
+      }
+    }catch(e){ console.warn("set lines failed", e); }
+  };
+
+
+  const YADISK_PUBLIC_LINK = 'https://disk.yandex.ru/i/qi3_JYRI_IBLeg';
+
+  function markNeedDownload(need) {
+    const btn = document.getElementById("downloadBtn");
+    const hint = document.getElementById("downloadHint");
+    if (!btn || !hint) return;
+    if (need) {
+      btn.classList.add("highlight");
+      hint.classList.add("warnText");
+      hint.textContent = "Файл можно скачать с Яндекс Диска (febbre.mp4 не найден рядом)";
+    } else {
+      btn.classList.remove("highlight");
+      hint.classList.remove("warnText");
+      hint.textContent = "Файл можно скачать с Яндекс Диска";
+    }
+  }
+
+  function openDownloadInNewWindow() {
+    window.open(YADISK_PUBLIC_LINK, "_blank", "noopener,noreferrer");
+  }
+
+  const vid = document.getElementById("vid");
+  const nowEl = document.getElementById("now");
+  const fileLabel = document.getElementById("fileLabel");
+  const srcLabel = document.getElementById("srcLabel");
+  const srcLamp = document.getElementById("srcLamp");
+  const filePick = document.getElementById("filePick");
+  const videoDock = document.getElementById("videoDock");
+  const videoDockSentinel = document.getElementById("videoDockSentinel");
+
+  if (fileLabel && !fileLabel.dataset.fileKey) fileLabel.dataset.fileKey = "febbre.mp4";
+
+  function setSourceUi(kind) {
+    if (srcLabel) {
+      if (kind === "local") srcLabel.textContent = "локальный (выбранный файл)";
+      else if (kind === "server") srcLabel.textContent = "сервер (интернет)";
+      else srcLabel.textContent = "неизвестно";
+    }
+    if (srcLamp) {
+      srcLamp.classList.remove("is-red","is-green","is-gray");
+      if (kind === "local") srcLamp.classList.add("is-green");
+      else if (kind === "server") srcLamp.classList.add("is-red");
+      else srcLamp.classList.add("is-gray");
+    }
+  }
+  setSourceUi("server");
+
+  function isPortraitMobile() {
+    return window.matchMedia("(max-width: 980px) and (orientation: portrait)").matches;
+  }
+
+  function undockVideo() {
+    if (!videoDock || !videoDockSentinel) return;
+    videoDock.classList.remove("isDocked");
+    videoDockSentinel.style.height = "0px";
+  }
+
+  function dockVideo() {
+    if (!videoDock || !videoDockSentinel) return;
+    if (videoDock.classList.contains("isDocked")) return;
+    const h = videoDock.getBoundingClientRect().height;
+    videoDockSentinel.style.height = `${Math.ceil(h)}px`;
+    videoDock.classList.add("isDocked");
+  }
+
+  function updateVideoDock() {
+    if (!videoDock || !videoDockSentinel) return;
+    if (!isPortraitMobile()) { undockVideo(); return; }
+    const r = videoDockSentinel.getBoundingClientRect();
+    const shouldDock = r.top <= 0;
+    if (shouldDock) dockVideo(); else undockVideo();
+  }
+
+  window.addEventListener("scroll", updateVideoDock, { passive: true });
+  window.addEventListener("resize", () => {
+    if (videoDock && videoDock.classList.contains("isDocked")) {
+      const h = videoDock.getBoundingClientRect().height;
+      if (videoDockSentinel) videoDockSentinel.style.height = `${Math.ceil(h)}px`;
+    }
+    updateVideoDock();
+  }, { passive: true });
+
+  let uiTimer = null;
+  let segTimer = null;
+
+  function startTicker() {
+    if (uiTimer) clearInterval(uiTimer);
+    uiTimer = setInterval(() => {
+      nowEl.textContent = (vid.currentTime || 0).toFixed(2);
+    }, 120);
+  }
+  startTicker();
+
+  function stopSegmentPlayback() {
+    if (segTimer) clearInterval(segTimer);
+    segTimer = null;
+  }
+
+  function playSegment(start, end) {
+    const s = Number(start), e = Number(end);
+    if (!Number.isFinite(s) || !Number.isFinite(e) || e <= s) {
+      alert("Проверь таймкоды: start должен быть < end (и оба числа).");
+      return;
+    }
+    stopSegmentPlayback();
+    vid.currentTime = Math.max(0, s);
+    const playPromise = vid.play();
+    if (playPromise && typeof playPromise.catch === "function") playPromise.catch(() => {});
+    segTimer = setInterval(() => {
+      if ((vid.currentTime || 0) >= e - 0.03) {
+        vid.pause();
+        stopSegmentPlayback();
+      }
+    }, 40);
+  }
+
+  document.getElementById("stop").onclick = () => {
+    vid.pause();
+    stopSegmentPlayback();
+  };
+
+  const downloadBtn = document.getElementById("downloadBtn");
+  if (downloadBtn) downloadBtn.onclick = openDownloadInNewWindow;
+
+  (function autoDetectDefaultFile() {
+    if (filePick && filePick.files && filePick.files.length) return;
+
+    const onMeta = () => { markNeedDownload(false); cleanup(); };
+    const onErr  = () => { markNeedDownload(true); cleanup(); };
+
+    function cleanup(){
+      vid.removeEventListener("loadedmetadata", onMeta);
+      vid.removeEventListener("error", onErr);
+    }
+
+    vid.addEventListener("loadedmetadata", onMeta);
+    vid.addEventListener("error", onErr);
+
+    try { vid.load(); } catch {}
+  })();
+
+  function storageKey() {
+    const name = (fileLabel.dataset.fileKey || "febbre.mp4");
+    return `febbre_segments_local_${name}`;
+  }
+
+  function loadSegments() {
+    try { return JSON.parse(localStorage.getItem(storageKey()) || "[]"); }
+    catch { return []; }
+  }
+
+  function saveSegments(arr) {
+    localStorage.setItem(storageKey(), JSON.stringify(arr));
+  }
+
+  let segments = loadSegments();
+
+  function normalizeSegmentsInPlace() {
+    if (!Array.isArray(segments)) segments = [];
+    for (let i = 0; i < LINES.length; i++) {
+      if (!segments[i]) segments[i] = { start: null, end: null, learned: false };
+      if (typeof segments[i].learned !== "boolean") segments[i].learned = false;
+
+      const s = segments[i].start;
+      const e = segments[i].end;
+      segments[i].start = (Number.isFinite(Number(s)) ? Number(s) : null);
+      segments[i].end   = (Number.isFinite(Number(e)) ? Number(e) : null);
+    }
+  }
+
+  function importFromObject(obj, { silent = false } = {}) {
+    if (!obj) throw new Error("Пустой JSON");
+    const incoming = Array.isArray(obj) ? obj : obj.segments;
+    if (!Array.isArray(incoming)) throw new Error("В JSON нет массива segments (или JSON не массив)");
+
+    segments = incoming.slice(0, LINES.length);
+    normalizeSegmentsInPlace();
+    saveSegments(segments);
+
+    if (!silent) alert("Импортировано ✅");
+  }
+
+  // ВАЖНО: принудительно перезаписываем локальные данные на каждом открытии,
+  // если febbre.json доступен. Никаких проверок "уже есть" и т.п.
+  async function forceSyncFromFebbreJson() {
+    // Пытаемся найти JSON в нескольких местах (на случай разных структур репозитория)
+    const candidates = [
+      "febbre.json",
+      "../../data/songs/febbre.json",
+      "../data/songs/febbre.json",
+      "data/songs/febbre.json",
+      "../../data/febbre.json",
+      "../data/febbre.json"
+    ];
+
+    for (const rel of candidates) {
+      try {
+        const url = new URL(rel, location.href);
+        url.searchParams.set("cb", String(Date.now())); // cache-bust
+
+        const res = await fetch(url.toString(), { cache: "no-store" });
+        if (!res.ok) continue;
+
+        const obj = await res.json();
+
+        // Новый формат (как store-hav.json): { version, song, ui, items:[{text,translation,start,end,learned...}] }
+        if (obj && obj.song && Array.isArray(obj.items)) {
+          // Обновим LINES из JSON, чтобы дизайн остался, но данные были едины
+          if (typeof window.__FEBBRE_SET_LINES_FROM_JSON === "function") {
+            window.__FEBBRE_SET_LINES_FROM_JSON(obj.items);
+          }
+          // Перенесём таймкоды/learned в локальную структуру segments
+          const incoming = obj.items.map(it => ({
+            start: (Number.isFinite(Number(it.start)) ? Number(it.start) : null),
+            end:   (Number.isFinite(Number(it.end)) ? Number(it.end) : null),
+            learned: (typeof it.learned === "boolean" ? it.learned : false)
+          }));
+          segments = incoming.slice(0, LINES.length);
+          normalizeSegmentsInPlace();
+          saveSegments(segments);
+          return true;
+        }
+
+        // Старый формат: { segments:[...]} или массив
+        importFromObject(obj, { silent: true });
+        return true;
+      } catch (e) {
+        console.warn("[FEBBRE] JSON не применён из", rel, e);
+      }
+    }
+    return false;
+  } catch (e) {
+      console.warn("[FEBBRE] febbre.json не применён:", e);
+      return false;
+    }
+  }
+
+  const rowsEl = document.getElementById("rows");
+  let showLearned = true;
+
+  function fmt(v) {
+    if (v === null || v === undefined || v === "") return "";
+    const n = Number(v);
+    return Number.isFinite(n) ? n.toFixed(2) : "";
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function renderRows() {
+    rowsEl.innerHTML = "";
+
+    LINES.forEach((line, i) => {
+      const seg = segments[i];
+      if (!showLearned && seg.learned) return;
+
+      const row = document.createElement("div");
+      row.className = "row";
+      if (seg.learned) row.classList.add("muted");
+
+      row.innerHTML = `
+        <div class="it">${escapeHtml(line.it)}</div>
+        <div class="ru">${escapeHtml(line.ru)}</div>
+
+        <div class="controls">
+          <button class="warn" data-act="play">▶️ Фрагмент</button>
+          <button class="ghost" data-act="toggleRu">Перевод</button>
+
+          <span class="mini">start</span>
+          <input type="number" step="0.01" inputmode="decimal" data-field="start" value="${fmt(seg.start)}" />
+          <button class="ghost" data-act="setStart">⏱ start=текущее</button>
+
+          <span class="mini">end</span>
+          <input type="number" step="0.01" inputmode="decimal" data-field="end" value="${fmt(seg.end)}" />
+          <button class="ghost" data-act="setEnd">⏱ end=текущее</button>
+
+          <button class="good" data-act="learned">${seg.learned ? "Вернуть в повтор" : "Выучено"}</button>
+        </div>
+      `;
+
+      const ruEl = row.querySelector(".ru");
+      const startInput = row.querySelector('input[data-field="start"]');
+      const endInput = row.querySelector('input[data-field="end"]');
+
+      row.querySelector('[data-act="toggleRu"]').onclick = () => {
+        ruEl.style.display = (ruEl.style.display === "block") ? "none" : "block";
+      };
+
+      row.querySelector('[data-act="setStart"]').onclick = () => {
+        const t = vid.currentTime || 0;
+        startInput.value = t.toFixed(2);
+        segments[i].start = Number(startInput.value);
+        saveSegments(segments);
+      };
+
+      row.querySelector('[data-act="setEnd"]').onclick = () => {
+        const t = vid.currentTime || 0;
+        endInput.value = t.toFixed(2);
+        segments[i].end = Number(endInput.value);
+        saveSegments(segments);
+      };
+
+      row.querySelector('[data-act="play"]').onclick = () => {
+        const s = Number(startInput.value);
+        const e = Number(endInput.value);
+        segments[i].start = Number.isFinite(s) ? s : null;
+        segments[i].end = Number.isFinite(e) ? e : null;
+        saveSegments(segments);
+        playSegment(segments[i].start, segments[i].end);
+      };
+
+      row.querySelector('[data-act="learned"]').onclick = () => {
+        segments[i].learned = !segments[i].learned;
+        saveSegments(segments);
+        renderRows();
+      };
+
+      startInput.addEventListener("change", () => {
+        const v = Number(startInput.value);
+        segments[i].start = Number.isFinite(v) ? v : null;
+        saveSegments(segments);
+      });
+
+      endInput.addEventListener("change", () => {
+        const v = Number(endInput.value);
+        segments[i].end = Number.isFinite(v) ? v : null;
+        saveSegments(segments);
+      });
+
+      rowsEl.appendChild(row);
+    });
+  }
+
+  (async function boot() {
+    // 1) Пытаемся принудительно перезалить сегменты из febbre.json
+    const synced = await forceSyncFromFebbreJson();
+
+    // 2) Берём актуальные сегменты из localStorage (после sync) или старые (если sync не вышел)
+    segments = loadSegments();
+    normalizeSegmentsInPlace();
+    renderRows();
+
+    // 3) Перепроверим docking (на случай входа не сверху)
+    updateVideoDock();
+
+    if (synced) console.info("[FEBBRE] Сегменты обновлены из febbre.json (force).");
+  })();
+
+  filePick.addEventListener("change", () => {
+    const f = filePick.files && filePick.files[0];
+    if (!f) return;
+
+    fileLabel.textContent = f.name;
+    fileLabel.dataset.fileKey = f.name;
+
+    segments = loadSegments();
+    normalizeSegmentsInPlace();
+    renderRows();
+
+    const url = URL.createObjectURL(f);
+    vid.src = url;
+    vid.load();
+
+    setSourceUi("local");
+  });
+
+  document.getElementById("useDefault").onclick = async () => {
+    fileLabel.textContent = "febbre.mp4";
+    fileLabel.dataset.fileKey = "febbre.mp4";
+
+    vid.src = "febbre.mp4";
+    vid.load();
+    setSourceUi("server");
+
+    // При возвращении к дефолтному файлу тоже форсим sync
+    await forceSyncFromFebbreJson();
+
+    segments = loadSegments();
+    normalizeSegmentsInPlace();
+    renderRows();
+  };
+
+  document.getElementById("saveAll").onclick = () => {
+    saveSegments(segments);
+    alert("Сохранено ✅");
+  };
+
+  let ruShownAll = false;
+  document.getElementById("toggleRuAll").onclick = () => {
+    ruShownAll = !ruShownAll;
+    document.querySelectorAll(".ru").forEach(el => el.style.display = ruShownAll ? "block" : "none");
+  };
+
+  document.getElementById("toggleLearned").onclick = () => {
+    showLearned = !showLearned;
+    document.getElementById("toggleLearned").textContent = showLearned ? "Показать/скрыть выученные" : "Показывать выученные: НЕТ";
+    renderRows();
+  };
+
+  document.getElementById("resetTimes").onclick = () => {
+    if (!confirm("Сбросить start/end для всех строк?")) return;
+    segments = segments.map(s => ({...s, start: null, end: null}));
+    saveSegments(segments);
+    renderRows();
+  };
+
+  document.getElementById("copyNow").onclick = async () => {
+    const t = (vid.currentTime || 0).toFixed(2);
+    try {
+      await navigator.clipboard.writeText(t);
+      alert(`Скопировано: ${t}s`);
+    } catch {
+      prompt("Скопируй вручную:", t);
+    }
+  };
+
+  const exportBox = document.getElementById("exportBox");
+  const importBox = document.getElementById("importBox");
+
+  const jsonPick = document.getElementById("jsonPick");
+  if (jsonPick) {
+    jsonPick.addEventListener("change", async () => {
+      const f = jsonPick.files && jsonPick.files[0];
+      if (!f) return;
+      try {
+        const txt = await readJsonFile(f);
+        importBox.value = txt;
+        alert("JSON загружен в поле импорта ✅ (теперь нажми «Импорт»)");
+      } catch (e) {
+        alert(e.message || "Ошибка чтения JSON.");
+      } finally {
+        // чтобы можно было выбрать тот же файл второй раз
+        jsonPick.value = "";
+      }
+    });
+  }
+
+  document.getElementById("exportBtn").onclick = () => {
+    const payload = {
+      file: fileLabel.dataset.fileKey || "febbre.mp4",
+      lines: LINES.map(x => x.it),
+      segments
+    };
+    exportBox.value = JSON.stringify(payload, null, 2);
+  };
+
+  document.getElementById("copyExport").onclick = async () => {
+    if (!exportBox.value.trim()) {
+      alert("Сначала нажми «Экспорт».");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(exportBox.value);
+      alert("JSON скопирован ✅");
+    } catch {
+      prompt("Скопируй вручную:", exportBox.value);
+    }
+  };
+
+
+  function sanitizeJsonText(text) {
+    // 1) убираем BOM + пробелы
+    let t = String(text ?? "").replace(/^\uFEFF/, "").trim();
+
+    // 2) если вставили код-блок ```json ... ```
+    if (t.startsWith("```")) {
+      t = t.replace(/^```[a-zA-Z0-9_-]*\s*/,"").replace(/```$/,"").trim();
+    }
+
+    // 3) часто копируют с лишним текстом до/после — попробуем вытащить первый JSON-объект/массив
+    const firstObj = t.indexOf("{");
+    const firstArr = t.indexOf("[");
+    let start = -1;
+    if (firstObj === -1) start = firstArr;
+    else if (firstArr === -1) start = firstObj;
+    else start = Math.min(firstObj, firstArr);
+
+    if (start > 0) t = t.slice(start).trim();
+
+    // 4) обрежем хвост после последней закрывающей скобки
+    const lastObj = t.lastIndexOf("}");
+    const lastArr = t.lastIndexOf("]");
+    const end = Math.max(lastObj, lastArr);
+    if (end !== -1 && end < t.length - 1) t = t.slice(0, end + 1).trim();
+
+    return t;
+  }
+
+  async function readJsonFile(file) {
+    return new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onerror = () => reject(new Error("Не удалось прочитать файл JSON"));
+      fr.onload = () => resolve(String(fr.result || ""));
+      fr.readAsText(file, "utf-8");
+    });
+  }
+
+  document.getElementById("importBtn").onclick = () => {
+    let obj;
+    const raw = sanitizeJsonText(importBox.value);
+    try { obj = JSON.parse(raw); }
+    catch (e) {
+      console.warn("[FEBBRE] JSON.parse error:", e, "raw:", raw.slice(0, 500));
+      alert("Не получилось разобрать JSON. Проверь, что вставлен чистый JSON без лишних символов (или выбери файл .json).\n\nТехнически: " + (e.message || e));
+      return;
+    }
+
+    try {
+      importFromObject(obj, { silent: false });
+      renderRows();
+    } catch (e) {
+      alert(e.message || "Ошибка импорта.");
+    }
+  };
+
+  // Focus-mode: прячем #pageHeader в mobile landscape, когда скроллят фразы
+  const phrasesPanel = document.getElementById("phrasesPanel");
+
+  function isLandscapeMobile() {
+    return window.matchMedia("(max-width: 980px) and (orientation: landscape)").matches;
+  }
+
+  function setFocusMode(on) {
+    document.body.classList.toggle("isFocusMode", !!on);
+  }
+
+  if (phrasesPanel) {
+    phrasesPanel.addEventListener("scroll", () => {
+      if (!isLandscapeMobile()) return;
+      setFocusMode(phrasesPanel.scrollTop > 8);
+    }, { passive: true });
+  }
+
+  window.addEventListener("resize", () => {
+    if (!isLandscapeMobile()) setFocusMode(false);
+  }, { passive: true });
+</script>
+
+  <div class="panel" style="margin-top:14px;">
+    <h2 style="margin:0 0 8px; font-size:16px; color:#eaeaf0;">💜 Поддержать проект</h2>
+    <div class="mini" style="margin-bottom:10px;">
+      Донат добровольный и не является покупкой товара или услуги.
+    </div>
+    <div class="topbar" style="margin-bottom:0;">
+      <!-- Замените href на ваши реальные ссылки оплаты -->
+            <a class="donateLink" href="https://donatty.com/serebrjakovmaratserebrjakov" id="donateDonatty" rel="noopener" style="text-decoration:none">
+        <button class="ghost" type="button">Donatty.com</button>
+      </a>
+            <a class="donateLink" href="https://donate.stream/yoomoney4100119460320153" id="donateYooMoney" rel="noopener" style="text-decoration:none">
+        <button class="ghost" type="button">ЮMoney</button>
+          </a>
+
+
+      <span class="mini" id="donateHint"></span>
+    </div>
+  </div>
+
+  <script>
+    // Подсказка, если ссылки не настроены
+    (function () {
+      const hint = document.getElementById("donateHint");
+      const a1 = document.getElementById("donateDonatty");
+      const a2 = document.getElementById("donateYooMoney");
+      const notSet = [a1, a2].some(a => !a || !a.getAttribute("href") || a.getAttribute("href") === "#");
+      if (hint && notSet) {
+        hint.textContent = "Админу: вставьте реальные ссылки в href (сейчас стоят заглушки).";
+      }
+      // Открываем платежные страницы в текущей вкладке (без новых окон)
+      [a1, a2].forEach(a => { if (a) a.target = "_self"; });
+    })();
+  </script>
+
+
+</body>
+</html>
