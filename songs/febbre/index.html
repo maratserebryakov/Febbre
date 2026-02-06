@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Febbre — listening</title>
+<style>
+  :root{--bg:#0f1220;--card:#161a2f;--muted:#a6a6b3;--txt:#eef2ff;--accent:#60a5fa}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
+  header{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+  h1{margin:0;font-size:20px}
+  .wrap{max-width:980px;margin:0 auto;padding:14px 16px}
+  .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  video{width:100%;max-height:52vh;border-radius:12px;background:#000}
+  .hint{color:var(--muted);font-size:12px}
+  .list{margin-top:12px}
+  .item{padding:10px;border-top:1px dashed rgba(255,255,255,.08)}
+  .it{font-weight:700}
+  .ru{color:#cbd5e1;display:none}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  input[type="number"],input[type="text"]{background:#0b0e1a;border:1px solid rgba(255,255,255,.14);color:var(--txt);border-radius:10px;padding:6px 8px}
+  button{border-radius:10px;padding:6px 10px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);color:#eaeaf0;cursor:pointer;font-weight:700}
+  .primary{background:rgba(96,165,250,.18)}
+  #friendlyIssue{margin:12px 0;padding:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);border-radius:14px;display:none}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Febbre — слушаем и слышим</h1></div></header>
+<div class="wrap">
+  <div class="card">
+    <video id="player" controls playsinline preload="metadata"></video>
+    <div class="row" style="margin-top:8px">
+      <button id="pickMedia">🎬 Выбрать файл</button>
+      <span class="hint">Можно mp3 или mp4</span>
+      <span class="hint" id="jsonSoftStatus" style="display:none">Разметка: загружена ✅</span>
+    </div>
+  </div>
+
+  <div id="friendlyIssue"></div>
+
+  <div class="card list" id="list"></div>
+
+  <div class="card" style="margin-top:12px">
+    <div class="row">
+      <button id="exportBtn">Экспорт JSON</button>
+      <button id="resetBtn">Починить автоматически</button>
+    </div>
+    <textarea id="out" rows="6" style="width:100%;margin-top:8px;background:#0b0e1a;color:#eaeaf0;border-radius:10px;border:1px solid rgba(255,255,255,.14)"></textarea>
+  </div>
+</div>
+
+<script>
+// ---------- Friendly panel (показывается только если что-то не так) ----------
+function showIssue(title,msg,actions=[],details=""){
+  const el=document.getElementById("friendlyIssue");
+  el.style.display="block";
+  el.innerHTML=`<div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+    <div><div style="font-weight:800">${title}</div><div class="hint">${msg}</div></div>
+    <button onclick="document.getElementById('friendlyIssue').style.display='none'">Скрыть</button>
+  </div><div class="row" style="margin-top:8px" id="act"></div>
+  ${details?`<details style="margin-top:8px"><summary>Показать причину</summary><div class="hint" style="white-space:pre-wrap">${details}</div></details>`:""}`;
+  const host=el.querySelector("#act");
+  actions.forEach(a=>{
+    const b=document.createElement("button");
+    b.textContent=a.label;
+    if(a.primary)b.classList.add("primary");
+    b.onclick=a.onClick;
+    host.appendChild(b);
+  });
+}
+function hideIssue(){document.getElementById("friendlyIssue").style.display="none"}
+
+window.addEventListener("error",(e)=>{
+  // максимально мягко, без пугающих слов
+  showIssue("Нужен один шаг",
+    "Страница загрузилась не полностью. Это не страшно — попробуем восстановить.",
+    [{label:"Починить автоматически",primary:true,onClick:resetAll}],
+    e.message
+  );
+});
+
+// ---------- Base lines (fallback) ----------
+let LINES=[
+  {it:"Non ci amerà la fama",ru:"Слава нас не полюбит"},
+  {it:"Non ci amerà nessuno",ru:"Никто нас не полюбит"},
+  {it:"Resta qui",ru:"Останься здесь"}
+];
+
+// ---------- State ----------
+let segments=[],phonetic=[];
+function storageKey(){return "febbre_segments_v1"}
+function phonKey(){return "febbre_phonetic_v1"}
+function loadSeg(){try{return JSON.parse(localStorage.getItem(storageKey())||"[]")}catch{return []}}
+function saveSeg(){localStorage.setItem(storageKey(),JSON.stringify(segments))}
+function loadPh(){try{return JSON.parse(localStorage.getItem(phonKey())||"[]")}catch{return []}}
+function savePh(){localStorage.setItem(phonKey(),JSON.stringify(phonetic))}
+function normalize(){
+  for(let i=0;i<LINES.length;i++){
+    if(!segments[i])segments[i]={start:null,end:null,learned:false};
+    if(typeof phonetic[i]!=="string")phonetic[i]="";
+  }
+}
+
+// ---------- Render ----------
+const list=document.getElementById("list");
+const player=document.getElementById("player");
+
+function render(){
+  normalize();
+  list.innerHTML="";
+  LINES.forEach((l,i)=>{
+    const s=segments[i];
+    const d=document.createElement("div");d.className="item";
+    d.innerHTML=`<div class="it">${escapeHtml(l.it)}</div>
+      <div class="ru">${escapeHtml(l.ru||"")}</div>
+      <div class="controls">
+        <button data-a="play">▶️ Фрагмент</button>
+        <button data-a="ru">Перевод</button>
+        <span class="mini">👂 как слышал</span>
+        <input type="text" value="${escapeAttr(phonetic[i]||"")}" placeholder="впиши как услышал…"/>
+        <span class="mini">start</span>
+        <input type="number" step="0.01" value="${s.start??""}"/>
+        <span class="mini">end</span>
+        <input type="number" step="0.01" value="${s.end??""}"/>
+      </div>`;
+    const btns=d.querySelectorAll("button");
+    const inputs=d.querySelectorAll("input");
+
+    btns[0].onclick=()=>{
+      if(s.start!=null){
+        player.currentTime=s.start;
+        player.play().catch(()=>{});
+      }else{
+        showIssue("Нужно один раз запустить плеер",
+          "На телефоне иногда нужно нажать Play вручную. После этого фрагменты будут работать.",
+          [{label:"Запустить сейчас",primary:true,onClick:()=>player.play().catch(()=>{})}],
+          ""
+        );
+      }
+    };
+    btns[1].onclick=()=>{
+      const ru=d.querySelector(".ru");
+      ru.style.display = (ru.style.display==="none"||!ru.style.display) ? "block" : "none";
+    };
+
+    inputs[0].onchange=()=>{phonetic[i]=inputs[0].value;savePh()};
+    inputs[1].onchange=()=>{const v=Number(inputs[1].value);segments[i].start=Number.isFinite(v)?v:null;saveSeg()};
+    inputs[2].onchange=()=>{const v=Number(inputs[2].value);segments[i].end=Number.isFinite(v)?v:null;saveSeg()};
+
+    list.appendChild(d);
+  });
+
+  // если вдруг действительно пусто — показать дружелюбно
+  if(list.children.length===0){
+    showIssue("Пока не видно строк песни",
+      "Похоже, строки не загрузились. Обычно помогает «Попробовать ещё раз» или «Починить автоматически».",
+      [
+        {label:"Попробовать ещё раз",primary:true,onClick:()=>location.reload()},
+        {label:"Починить автоматически",onClick:resetAll}
+      ]
+    );
+  }else{
+    hideIssue();
+  }
+}
+
+function escapeHtml(s){return String(s).replace(/[&<>]/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;" }[m]))}
+function escapeAttr(s){return String(s).replace(/["&<>]/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[m]||m))}
+
+// ---------- Soft JSON load ----------
+async function loadJsonSoft(){
+  // Тихо пытаемся подхватить разметку (таймкоды/строки/фонетику) из JSON.
+  // Если не получилось — просто работаем дальше (без пугающих сообщений).
+
+  const parts = location.pathname.split("/").filter(Boolean);
+  const repo = parts.length ? parts[0] : "";
+  const repoRoot = repo ? `/${repo}/` : "/";
+
+  const candidates = [
+    repo ? `${repoRoot}data/songs/febbre.json` : null,
+    "../../data/songs/febbre.json",
+    "../data/songs/febbre.json",
+    "data/songs/febbre.json",
+    "febbre.json"
+  ].filter(Boolean);
+
+  for (const rel of candidates){
+    try{
+      const url = new URL(rel, location.href);
+      url.searchParams.set("cb", String(Date.now()));
+      const res = await fetch(url.toString(), { cache:"no-store" });
+      if(!res.ok) continue;
+      const obj = await res.json();
+
+      if(obj && obj.song && Array.isArray(obj.items) && obj.items.length){
+        const rebuilt = obj.items.map(it=>({
+          it: String(it.text || it.it || it.text_no_official || ""),
+          ru: String(it.translation || it.ru || it.translation_ru || "")
+        })).filter(x=>x.it);
+
+        if(rebuilt.length) LINES = rebuilt;
+
+        segments = obj.items.slice(0, LINES.length).map(it=>({
+          start: Number.isFinite(Number(it.start)) ? Number(it.start) : null,
+          end: Number.isFinite(Number(it.end)) ? Number(it.end) : null,
+          learned: (typeof it.learned === "boolean") ? it.learned : false
+        }));
+
+        phonetic = obj.items.slice(0, LINES.length).map(it=>String(it.phonetic || it.phonetic_user || ""));
+
+        normalize();
+        saveSeg();
+        savePh();
+        render();
+
+        const st=document.getElementById("jsonSoftStatus");
+        if(st){st.style.display="inline";st.textContent="Разметка: загружена ✅";}
+        return true;
+      }
+
+      // Старый формат (если вдруг): {lines:[...], segments:[...]}
+      if(obj && Array.isArray(obj.lines) && Array.isArray(obj.segments)){
+        LINES = obj.lines.map(t=>({it:String(t),ru:""}));
+        segments = obj.segments.slice(0, LINES.length);
+        phonetic = [];
+        normalize();
+        saveSeg();
+        savePh();
+        render();
+        const st=document.getElementById("jsonSoftStatus");
+        if(st){st.style.display="inline";st.textContent="Разметка: загружена ✅";}
+        return true;
+      }
+    }catch(e){
+      console.warn("[Febbre] JSON soft load failed for", rel, e);
+    }
+  }
+  return false;
+}
+
+// ---------- Media picker ----------
+document.getElementById("pickMedia").onclick=()=>{
+  const inp=document.createElement("input");
+  inp.type="file";
+  inp.accept="audio/*,video/*";
+  inp.onchange=()=>{
+    const f=inp.files[0];
+    if(!f)return;
+    player.src=URL.createObjectURL(f);
+    player.load();
+  };
+  inp.click();
+};
+
+// ---------- Export / reset ----------
+document.getElementById("exportBtn").onclick=()=>{
+  const payload={
+    version:1,
+    song:{id:"febbre",title:"Febbre",artist:"Clara",language:"it",languageName:"Italiano",media:{src:""}},
+    ui:{showTranslationByDefault:true,showPhoneticByDefault:false,showWhyHeardByDefault:false},
+    items:LINES.map((l,i)=>({
+      id:`fb-${String(i+1).padStart(3,"0")}`,
+      text:l.it,
+      translation:l.ru||"",
+      phonetic:phonetic[i]||"",
+      why:"",
+      confidence:null,
+      start:segments[i]?.start??null,
+      end:segments[i]?.end??null,
+      learned:!!segments[i]?.learned
+    }))
+  };
+  document.getElementById("out").value=JSON.stringify(payload,null,2);
+};
+
+function resetAll(){
+  // безопасно: очищает только данные этой страницы
+  localStorage.removeItem(storageKey());
+  localStorage.removeItem(phonKey());
+  segments=[];
+  phonetic=[];
+  render();
+}
+
+document.getElementById("resetBtn").onclick=resetAll;
+
+// ---------- Boot ----------
+segments=loadSeg();
+phonetic=loadPh();
+render();
+loadJsonSoft(); // мягко, без обязательности
+</script>
+</body>
+</html>
