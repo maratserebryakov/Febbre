@@ -3,98 +3,89 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Store Hav — Учим перевод по фрагментам</title>
+  <title>Store Hav — Учим на слух</title>
   <link rel="stylesheet" href="../../assets/styles.css" />
 </head>
 <body>
   <div id="pageHeader">
     <h1>🎵 <span id="songTitle">Store Hav</span> — <span id="songArtist">Kamilla Wigestrand</span></h1>
     <p class="hint">
-      <span id="songLang">Norsk</span> · <span id="songHint">Положи медиа-файл рядом или выбери через кнопку.</span>
+      <span id="songLang">Norsk</span> · <span id="songHint"></span>
     </p>
   </div>
 
   <div id="jsNotRunning">
-    <div style="font-weight:800; margin-bottom:6px;">Скрипт не запустился</div>
-    <div style="opacity:.9">
-      Попробуйте другой браузер или отключите блокировщики скриптов.
-    </div>
+    <div style="font-weight:800;margin-bottom:6px;">Скрипт не запустился</div>
+    <div style="opacity:.9">Попробуйте другой браузер или отключите блокировщики скриптов.</div>
   </div>
 
   <div class="layout">
-    <!-- LEFT: Player & Controls -->
+    <!-- LEFT -->
     <div class="panel playerWrap">
-      <div class="topbar">
-        <button class="primary" id="btnLoadMedia">Загрузить медиа</button>
-        <label class="ghost" style="padding:8px 10px; border-radius:10px; cursor:pointer;">
-          🎬 Выбрать медиа
-          <input type="file" id="mediaPick" accept="audio/*,video/*" style="display:none" />
-        </label>
+      <div class="media-row">
+        <button class="ghost" id="btnLoadLocal">📁 Выбрать файл</button>
+        <input type="file" id="mediaPick" accept="audio/*,video/*" style="display:none" />
+        <button class="primary" id="btnLoadYaDisk">☁️ Яндекс.Диск</button>
+        <span id="mediaLamp" class="lamp lamp-off"></span>
         <span class="pill">⏱ <span id="tNow" class="mono">0.00</span>s</span>
       </div>
 
       <div id="videoDockSentinel" class="videoDockSentinel"></div>
       <div id="videoDock" class="videoDock">
-        <audio id="player" controls preload="metadata" style="width:100%;border-radius:12px;">
-          Ваш браузер не поддерживает HTML5 audio/video.
-        </audio>
+        <audio id="player" controls preload="metadata" style="width:100%;border-radius:12px;"></audio>
       </div>
 
       <div class="sep"></div>
 
-      <!-- Segment controls -->
       <div id="segStatus"></div>
       <div class="topbar">
         <button class="warn" id="btnPlaySeg" disabled>▶ Фрагмент</button>
-        <button class="ghost" id="btnStart" disabled>⏱ Start = сейчас</button>
-        <button class="ghost" id="btnEnd" disabled>⏱ End = сейчас</button>
-        <button class="bad" id="btnClear" disabled>✕ Сбросить</button>
+        <button class="ghost" id="btnStart" disabled>⏱ Start</button>
+        <button class="ghost" id="btnEnd" disabled>⏱ End</button>
+        <button class="bad" id="btnClear" disabled>✕ Сброс</button>
       </div>
 
       <div class="topbar">
-        <label style="font-size:13px; cursor:pointer; user-select:none;">
+        <label style="font-size:13px;cursor:pointer;user-select:none;">
           <input type="checkbox" id="loopToggle" /> 🔁 Зациклить
         </label>
-        <label style="font-size:13px; cursor:pointer; user-select:none;">
+        <label style="font-size:13px;cursor:pointer;user-select:none;">
           <input type="checkbox" id="autoNextToggle" /> ⏭ Авто-следующая
         </label>
       </div>
 
       <div class="sep"></div>
 
-      <!-- Global show/hide -->
       <div class="toggleRow">
-        <label><input type="checkbox" id="globalShowTrans" checked /> Переводы</label>
-        <label><input type="checkbox" id="globalShowPhon" /> 👂 Фонетика</label>
+        <label><input type="checkbox" id="globalShowOrig" /> 👁 Оригинал</label>
+        <label><input type="checkbox" id="globalShowTrans" /> 💬 Переводы</label>
         <label><input type="checkbox" id="globalShowWhy" /> 🧠 Почему так</label>
       </div>
 
       <div class="sep"></div>
 
-      <!-- JSON tools -->
       <details>
-        <summary class="mini" style="cursor:pointer; margin-bottom:8px;">🔧 Экспорт / Импорт JSON</summary>
-        <textarea id="jsonBox" placeholder="JSON появится здесь…"></textarea>
+        <summary class="mini" style="cursor:pointer;margin-bottom:8px;">🔧 Экспорт / Импорт JSON</summary>
+        <textarea id="jsonBox" placeholder="JSON…"></textarea>
         <div class="topbar" style="margin-top:8px;">
           <button class="ghost" id="btnExport">Экспорт</button>
           <button class="ghost" id="btnImport">Импорт</button>
-          <button class="bad" id="btnReset">Сброс к шаблону</button>
-          <label class="ghost" style="padding:8px 10px; border-radius:10px; cursor:pointer;">
-            📂 JSON-файл
+          <button class="bad" id="btnReset">Сброс</button>
+          <label class="ghost" style="padding:8px 10px;border-radius:10px;cursor:pointer;">
+            📂 JSON
             <input type="file" id="filePick" accept=".json,application/json" style="display:none" />
           </label>
         </div>
       </details>
     </div>
 
-    <!-- RIGHT: Lines -->
+    <!-- RIGHT -->
     <div class="panel" id="phrasesPanel">
       <div id="lines"></div>
     </div>
   </div>
 
   <div id="toast"></div>
-
   <script>try{document.documentElement.classList.add('js');}catch{}</script>
   <script src="../../assets/app.js"></script>
 </body>
