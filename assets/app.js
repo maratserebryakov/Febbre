@@ -83,14 +83,11 @@
   }
 
   /* ── Yandex Disk direct link ── */
-  async function yadiskDirectUrl(publicUrl) {
-    const api = "https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key="
-      + encodeURIComponent(publicUrl);
-    const r = await fetch(api);
-    if (!r.ok) throw new Error(`Yandex API ${r.status}`);
-    const j = await r.json();
-    if (!j.href) throw new Error("Нет ссылки в ответе Яндекса");
-    return j.href;
+    function yadiskDirectUrl(publicUrl) {
+    // Яндекс.Диск: превращаем публичную ссылку в прямую ссылку скачивания
+    // https://disk.yandex.ru/i/XXXX → https://getfile.dokpub.com/yandex/get/https://disk.yandex.ru/i/XXXX
+    // Альтернатива: просто открываем в новой вкладке для ручного скачивания
+    return "https://getfile.dokpub.com/yandex/get/" + publicUrl;
   }
 
   /* ══════════════════════════════════════
