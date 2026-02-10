@@ -1,22 +1,30 @@
 :root { color-scheme: dark; }
 
+* { box-sizing: border-box; }
+
 body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   margin: 18px;
   background: #0f0f12;
   color: #eaeaf0;
 }
 
 h1 { margin: 0 0 6px; color: #c084fc; font-size: 22px; }
+h2 { color: #eaeaf0; }
+
 .hint { margin: 0 0 14px; color: #a1a1aa; line-height: 1.35; }
 
+/* ═══ Layout ═══ */
 .layout {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: 14px;
   align-items: start;
 }
-@media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+@media (max-width: 980px) {
+  .layout { grid-template-columns: 1fr; }
+}
 
 .panel {
   background: #15151b;
@@ -24,27 +32,13 @@ h1 { margin: 0 0 6px; color: #c084fc; font-size: 22px; }
   border-radius: 14px;
   padding: 12px;
 }
+
 .playerWrap { position: sticky; top: 10px; }
 @media (max-width: 980px) { .playerWrap { position: static; } }
 
 #player { width: 100%; border-radius: 12px; background: #000; }
 
-.row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  padding: 12px;
-  border-radius: 12px;
-  background: #111118;
-  border: 1px solid #242432;
-  margin-bottom: 10px;
-}
-
-.noText { font-size: 16px; }
-.ruText { display: none; color: #a1a1aa; }
-
-.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-
+/* ═══ Buttons ═══ */
 button {
   border: 0;
   border-radius: 10px;
@@ -52,16 +46,20 @@ button {
   cursor: pointer;
   background: #2d2d3a;
   color: #eaeaf0;
+  font-size: 14px;
 }
 button:hover { filter: brightness(1.07); }
 button:disabled { opacity: 0.4; cursor: default; filter: none; }
 
-.primary, .btn-primary { background: #7c3aed; }
+.primary, .btn-primary { background: #7c3aed; color: #fff; }
 .good, .btn-good { background: #10b981; color: #071b12; }
 .warn { background: #f59e0b; color: #1a1204; }
 .bad { background: #ef4444; color: #1f0505; }
 .ghost { background: transparent; border: 1px solid #2a2a35; }
 
+.tiny { font-size: 12px; padding: 4px 8px; border-radius: 8px; }
+
+/* ═══ Inputs ═══ */
 input[type="number"],
 input[type="text"],
 textarea {
@@ -70,12 +68,28 @@ textarea {
   border: 1px solid #2a2a35;
   border-radius: 10px;
   padding: 8px 10px;
+  font-size: 14px;
+  font-family: inherit;
 }
 input[type="number"] { width: 96px; }
-textarea { width: 100%; min-height: 110px; resize: vertical; box-sizing: border-box; }
+textarea { width: 100%; min-height: 110px; resize: vertical; }
 
+/* ═══ Utility ═══ */
 .mini { font-size: 12px; color: #a1a1aa; }
 .mono { font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace; }
+.muted { opacity: .6; }
+.sep { height: 1px; background: #2a2a35; margin: 12px 0; }
+
+.pill {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  font-size: 12px;
+  color: #cbd5e1;
+  white-space: nowrap;
+}
 
 .topbar {
   display: flex;
@@ -95,45 +109,53 @@ textarea { width: 100%; min-height: 110px; resize: vertical; box-sizing: border-
   background: #111118;
 }
 
-.pill {
+/* ═══ Media Lamp ═══ */
+.lamp {
   display: inline-block;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  font-size: 12px;
-  color: #cbd5e1;
-  white-space: nowrap;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  vertical-align: middle;
+  margin-left: 8px;
+  transition: background 300ms ease, box-shadow 300ms ease;
+}
+.lamp-off {
+  background: #333;
+  box-shadow: none;
+}
+.lamp-green {
+  background: #22c55e;
+  box-shadow: 0 0 6px 2px rgba(34, 197, 94, 0.5);
+}
+.lamp-red {
+  background: #ef4444;
+  box-shadow: 0 0 6px 2px rgba(239, 68, 68, 0.5);
 }
 
-.sep { height: 1px; background: #2a2a35; margin: 12px 0; }
-.muted { opacity: .6; }
+/* ═══ Media row ═══ */
+.media-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
-/* === JS-off индикатор === */
+/* ═══ JS-off fallback ═══ */
 #jsNotRunning {
   display: block;
   margin: 12px 0;
   padding: 12px 14px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, .14);
-  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
   color: #eaeaf0;
   line-height: 1.35;
 }
 .js #jsNotRunning { display: none; }
 
-#appStatus {
-  display: inline-block;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, .14);
-  background: rgba(0, 0, 0, .18);
-  color: #cbd5e1;
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-/* === Video dock (portrait mobile) === */
+/* ═══ Video Dock (portrait mobile) ═══ */
 .videoDock { position: relative; border-radius: 12px; }
 .videoDockSentinel { height: 0; }
 
@@ -145,7 +167,6 @@ textarea { width: 100%; min-height: 110px; resize: vertical; box-sizing: border-
     background: #15151b;
     border-bottom: 1px solid #2a2a35;
     padding: 10px 18px;
-    box-sizing: border-box;
   }
   .videoDock.isDocked #player {
     width: 100%;
@@ -155,7 +176,7 @@ textarea { width: 100%; min-height: 110px; resize: vertical; box-sizing: border-
   }
 }
 
-/* === Lines (song phrases) === */
+/* ═══ Lines (phrases) ═══ */
 .line {
   padding: 10px 12px;
   border-radius: 12px;
@@ -170,32 +191,66 @@ textarea { width: 100%; min-height: 110px; resize: vertical; box-sizing: border-
   border-color: #7c3aed;
   box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.25);
 }
-
-.lineTop {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: space-between;
+.line.learned {
+  border-left: 3px solid #10b981;
 }
 
-.lineTexts { flex: 1; min-width: 0; }
-.lineTexts .noText { font-size: 16px; line-height: 1.35; }
-.lineTexts .ruText { color: #a1a1aa; font-size: 14px; margin-top: 3px; }
+/* line header: number + user input */
+.line-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.line-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(124, 58, 237, 0.15);
+  color: #c084fc;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.user-heard {
+  flex: 1;
+  min-width: 0;
+  background: #0a0a0f;
+  border: 1px solid #2a2a35;
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #fbbf24;
+  font-size: 15px;
+  font-style: italic;
+}
+.user-heard::placeholder { color: #555; font-style: italic; }
 
-.lineActions {
+/* original text row */
+.orig-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+.orig-text {
+  font-size: 16px;
+  line-height: 1.35;
+  color: #eaeaf0;
+}
+.btn-reveal { flex-shrink: 0; }
+
+/* line actions */
+.line-actions {
   display: flex;
   gap: 5px;
   flex-wrap: wrap;
-  flex-shrink: 0;
+  margin-top: 6px;
 }
 
-.tiny {
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 8px;
-}
-
-/* === Sub-panels (phonetic, why) === */
+/* ═══ Sub-panels (translation, phonetic, why) ═══ */
 .sub {
   max-height: 0;
   overflow: hidden;
@@ -204,7 +259,7 @@ textarea { width: 100%; min-height: 110px; resize: vertical; box-sizing: border-
   margin-top: 0;
 }
 .sub.visible {
-  max-height: 300px;
+  max-height: 400px;
   opacity: 1;
   margin-top: 8px;
 }
@@ -218,7 +273,7 @@ textarea { width: 100%; min-height: 110px; resize: vertical; box-sizing: border-
   line-height: 1.45;
 }
 
-/* === Toast === */
+/* ═══ Toast ═══ */
 #toast {
   position: fixed;
   bottom: 20px;
@@ -244,7 +299,7 @@ textarea { width: 100%; min-height: 110px; resize: vertical; box-sizing: border-
 }
 #toast small { display: block; margin-top: 4px; font-size: 12px; color: #a1a1aa; }
 
-/* === Global toggle checkboxes === */
+/* ═══ Toggle row ═══ */
 .toggleRow {
   display: flex;
   gap: 14px;
@@ -261,7 +316,16 @@ textarea { width: 100%; min-height: 110px; resize: vertical; box-sizing: border-
   user-select: none;
 }
 
-/* === Song catalog (home page) === */
+/* ═══ Seg status ═══ */
+#segStatus {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 8px 0;
+}
+
+/* ═══ Song Catalog (home page) ═══ */
 .songCard {
   display: block;
   text-decoration: none;
@@ -277,12 +341,3 @@ textarea { width: 100%; min-height: 110px; resize: vertical; box-sizing: border-
 .songTitle { font-size: 18px; font-weight: 700; color: #c084fc; }
 .songMeta { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
 .songSmall { font-size: 13px; color: #a1a1aa; margin-top: 6px; }
-
-/* === Seg status bar === */
-#segStatus {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-  margin: 8px 0;
-}
