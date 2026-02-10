@@ -6,56 +6,59 @@
     "artist": "Kamilla Wigestrand",
     "language": "no",
     "languageName": "Norsk",
-    "hint": "Можно использовать mp3 или mp4. Положи файл рядом со страницей песни или выбери локально через «🎬 Выбрать медиа».",
+    "hint": "Выбери mp3 локально или загрузи с Яндекс.Диска.",
     "media": {
-      "src": "store-hav.mp3"
+      "src": "store-hav.mp3",
+      "yadisk": "https://disk.yandex.ru/d/P9Vu1Wg0Qoo19w"
     }
   },
   "ui": {
-    "showTranslationByDefault": true,
+    "showOriginalByDefault": false,
+    "showTranslationByDefault": false,
     "showPhoneticByDefault": false,
     "showWhyHeardByDefault": false
   },
   "items": [
-    {
-      "id": "sh-001",
-      "text": "Noe er vekk",
-      "phonetic": "нуммэ а сык'",
-      "translation": "Что-то исчезло",
-      "why": "«Noe er» поётся слитно, гласные растягиваются, r исчезает. «Vekk» теряет чёткий k и слышится как короткий резкий звук.",
-      "confidence": 0.9
-    },
-    {
-      "id": "sh-002",
-      "text": "Hver gang jeg våkner",
-      "phonetic": "ва гом я вокнэ",
-      "translation": "Каждый раз, когда я просыпаюсь",
-      "why": "В «hver gang» r почти не слышно, a редуцируется. «Jeg» звучит как «я/йай». В «våkner» сочетание kn почти исчезает.",
-      "confidence": 0.95
-    },
-    {
-      "id": "sh-003",
-      "text": "Nå er det bare meg - her",
-      "phonetic": "но а ре боре май / харь",
-      "translation": "Теперь здесь только я",
-      "why": "«Nå er det» поётся как единый поток. «Bare» легко превращается в «боре». «Meg» редуцируется до «май». «Her» часто растворяется в дыхании.",
-      "confidence": 0.9
-    },
-    {
-      "id": "sh-004",
-      "text": "Finner jeg frem",
-      "phonetic": "фым нэ я фрем",
-      "translation": "Я нахожу путь",
-      "why": "g в «jeg» исчезает, гласные растягиваются. «Frem» ты услышал почти идеально.",
-      "confidence": 0.98
-    },
-    {
-      "id": "sh-005",
-      "text": "Vandrer i tåke",
-      "phonetic": "вомбрэри токе",
-      "translation": "Брожу в тумане",
-      "why": "«Tåke» сохранено почти без искажений. В «vandrer i» nd/dr сглаживаются, мозг достраивает привычные русские согласные.",
-      "confidence": 0.95
-    }
+    { "id": "sh-001", "text": "Store hav", "phonetic": "", "translation": "Большое море", "why": "", "confidence": null },
+    { "id": "sh-002", "text": "Noe er vekk", "phonetic": "нуммэ а сык'", "translation": "Что-то исчезло", "why": "«Noe er» поётся слитно, гласные растягиваются, r исчезает. «Vekk» теряет чёткий k и слышится как короткий резкий звук.", "confidence": 0.9 },
+    { "id": "sh-003", "text": "Hver gang jeg våkner", "phonetic": "ва гом я вокнэ", "translation": "Каждый раз, когда я просыпаюсь", "why": "В «hver gang» r почти не слышно, a редуцируется. «Jeg» звучит как «я/йай». В «våkner» сочетание kn почти исчезает.", "confidence": 0.95 },
+    { "id": "sh-004", "text": "Nå er det bare meg - her", "phonetic": "но а ре боре май / харь", "translation": "Теперь здесь только я", "why": "«Nå er det» поётся как единый поток. «Bare» легко превращается в «боре». «Meg» редуцируется до «май». «Her» часто растворяется в дыхании.", "confidence": 0.9 },
+    { "id": "sh-005", "text": "Finner jeg frem", "phonetic": "фым нэ я фрем", "translation": "Я нахожу путь", "why": "g в «jeg» исчезает, гласные растягиваются.", "confidence": 0.98 },
+    { "id": "sh-006", "text": "Vandrer i tåke", "phonetic": "вомбрэри токе", "translation": "Брожу в тумане", "why": "«Tåke» сохранено почти без искажений. В «vandrer i» nd/dr сглаживаются.", "confidence": 0.95 },
+    { "id": "sh-007", "text": "Tror at jeg trenger deg - her", "phonetic": "", "translation": "Думаю, что мне нужен ты — здесь", "why": "", "confidence": null },
+    { "id": "sh-008", "text": "Men du er ikke her", "phonetic": "", "translation": "Но тебя здесь нет", "why": "", "confidence": null },
+    { "id": "sh-009", "text": "Ikke her", "phonetic": "", "translation": "Не здесь", "why": "", "confidence": null },
+    { "id": "sh-010", "text": "Du er ikke her", "phonetic": "", "translation": "Тебя здесь нет", "why": "", "confidence": null },
+    { "id": "sh-011", "text": "Ikke her", "phonetic": "", "translation": "Не здесь", "why": "", "confidence": null },
+    { "id": "sh-012", "text": "Når jeg frem til deg", "phonetic": "", "translation": "Доберусь ли я до тебя", "why": "", "confidence": null },
+    { "id": "sh-013", "text": "Over store hav", "phonetic": "", "translation": "Через большое море", "why": "", "confidence": null },
+    { "id": "sh-014", "text": "Husker du det vi var", "phonetic": "", "translation": "Помнишь ли ты, чем мы были", "why": "", "confidence": null },
+    { "id": "sh-015", "text": "Det vi er, og", "phonetic": "", "translation": "То, что мы есть, и", "why": "", "confidence": null },
+    { "id": "sh-016", "text": "Det du har her", "phonetic": "", "translation": "То, что у тебя есть здесь", "why": "", "confidence": null },
+    { "id": "sh-017", "text": "Når jeg frem til deg", "phonetic": "", "translation": "Доберусь ли я до тебя", "why": "", "confidence": null },
+    { "id": "sh-018", "text": "Over store hav", "phonetic": "", "translation": "Через большое море", "why": "", "confidence": null },
+    { "id": "sh-019", "text": "Husker du det vi var", "phonetic": "", "translation": "Помнишь ли ты, чем мы были", "why": "", "confidence": null },
+    { "id": "sh-020", "text": "Det vi er, og", "phonetic": "", "translation": "То, что мы есть, и", "why": "", "confidence": null },
+    { "id": "sh-021", "text": "Det du har her", "phonetic": "", "translation": "То, что у тебя есть здесь", "why": "", "confidence": null },
+    { "id": "sh-022", "text": "Jeg stod igjen", "phonetic": "", "translation": "Я остался стоять", "why": "", "confidence": null },
+    { "id": "sh-023", "text": "Du dro av gårde", "phonetic": "", "translation": "Ты уехал", "why": "", "confidence": null },
+    { "id": "sh-024", "text": "Hva om du glemmer meg - der", "phonetic": "", "translation": "Что если ты забудешь меня — там", "why": "", "confidence": null },
+    { "id": "sh-025", "text": "Dager er grå", "phonetic": "", "translation": "Дни серые", "why": "", "confidence": null },
+    { "id": "sh-026", "text": "Husker du våre?", "phonetic": "", "translation": "Помнишь ли ты наши?", "why": "", "confidence": null },
+    { "id": "sh-027", "text": "Kjenner du meg igjen - her", "phonetic": "", "translation": "Узнаёшь ли ты меня снова — здесь", "why": "", "confidence": null },
+    { "id": "sh-028", "text": "Men du er ikke her", "phonetic": "", "translation": "Но тебя здесь нет", "why": "", "confidence": null },
+    { "id": "sh-029", "text": "Ikke her", "phonetic": "", "translation": "Не здесь", "why": "", "confidence": null },
+    { "id": "sh-030", "text": "Du er ikke her", "phonetic": "", "translation": "Тебя здесь нет", "why": "", "confidence": null },
+    { "id": "sh-031", "text": "Ikke her", "phonetic": "", "translation": "Не здесь", "why": "", "confidence": null },
+    { "id": "sh-032", "text": "Når jeg frem til deg", "phonetic": "", "translation": "Доберусь ли я до тебя", "why": "", "confidence": null },
+    { "id": "sh-033", "text": "Over store hav", "phonetic": "", "translation": "Через большое море", "why": "", "confidence": null },
+    { "id": "sh-034", "text": "Husker du det vi var", "phonetic": "", "translation": "Помнишь ли ты, чем мы были", "why": "", "confidence": null },
+    { "id": "sh-035", "text": "Det vi er, og", "phonetic": "", "translation": "То, что мы есть, и", "why": "", "confidence": null },
+    { "id": "sh-036", "text": "Det du har her", "phonetic": "", "translation": "То, что у тебя есть здесь", "why": "", "confidence": null },
+    { "id": "sh-037", "text": "Når jeg frem til deg", "phonetic": "", "translation": "Доберусь ли я до тебя", "why": "", "confidence": null },
+    { "id": "sh-038", "text": "Over store hav", "phonetic": "", "translation": "Через большое море", "why": "", "confidence": null },
+    { "id": "sh-039", "text": "Husker du det vi var", "phonetic": "", "translation": "Помнишь ли ты, чем мы были", "why": "", "confidence": null },
+    { "id": "sh-040", "text": "Det vi er, og", "phonetic": "", "translation": "То, что мы есть, и", "why": "", "confidence": null },
+    { "id": "sh-041", "text": "Det du har her", "phonetic": "", "translation": "То, что у тебя есть здесь", "why": "", "confidence": null }
   ]
 }
