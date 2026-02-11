@@ -20,7 +20,7 @@
   },
   "items": [
     {
-      "id": "sh-002",
+      "id": "sh-001",
       "text": "Noe er vekk",
       "phonetic": "нуммэ а сык'",
       "translation": "Что-то исчезло",
@@ -32,7 +32,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-003",
+      "id": "sh-002",
       "text": "Hver gang jeg våkner",
       "phonetic": "ва гом я вокнэ",
       "translation": "Каждый раз, когда я просыпаюсь",
@@ -44,7 +44,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-004",
+      "id": "sh-003",
       "text": "Nå er det bare meg - her",
       "phonetic": "но а ре боре май / харь",
       "translation": "Теперь здесь только я",
@@ -56,7 +56,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-005",
+      "id": "sh-004",
       "text": "Finner jeg frem",
       "phonetic": "фым нэ я фрем",
       "translation": "Я нахожу путь",
@@ -68,7 +68,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-006",
+      "id": "sh-005",
       "text": "Vandrer i tåke",
       "phonetic": "вомбрэри токе",
       "translation": "Брожу в тумане",
@@ -80,521 +80,19 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-007",
+      "id": "sh-006",
       "text": "Tror at jeg trenger deg - her",
       "phonetic": "цру ра ця цринге дай - харь",
       "translation": "Думаю, что мне нужен ты — здесь",
-      "why": "«Tror» растягивается. «Jeg» → «я». «Trenger» — ng назальное, er редуцируется. «Deg» → «дай». «Her» мягко уходит в дыхание.",
-      "confidence": 0.85,
+      "why": "Норвежское «tr» произносится с ретрофлексией — язык загибается назад, создавая звук, похожий на «цр» для русского уха. «Tror» → «цру» — тот же ретрофлексный tr + долгое o. «At» → «ра/а» — предлог теряется в потоке, сливаясь с предыдущим словом. «Jeg» → «ця» — j после паузы в потоке пения может звучать как мягкий аффрикат. «Trenger» → «цринге» — снова ретрофлексное tr, ng — назальный звук, er на конце проглатывается. «Deg» → «дай» — типичная разговорная форма. «Her» → «харь» — мягкое h, r почти немое.",
+      "confidence": 0.75,
       "start": 27.1,
       "end": 33.62,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-008",
-      "text": "Men du er ikke her",
-      "phonetic": "мэн ду э ик'э харь",
-      "translation": "Но тебя здесь нет",
-      "why": "Фраза чёткая, но «er» почти исчезает. «Ikke» — двойное k даёт резкий стоп. «Her» звучит мягко.",
-      "confidence": 0.92,
-      "start": 35.46,
-      "end": 38.83,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-009",
-      "text": "Ikke her",
-      "phonetic": "ик'э харь",
-      "translation": "Не здесь",
-      "why": "Короткий выдох. kk создаёт паузу внутри слова.",
-      "confidence": 0.98,
-      "start": 38.8,
-      "end": 39.91,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-010",
-      "text": "Du er ikke her",
-      "phonetic": "ду э ик'э харь",
-      "translation": "Тебя здесь нет",
-      "why": "«Du er» сливается. Остальное как выше.",
-      "confidence": 0.95,
-      "start": 39.89,
-      "end": 42.67,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-011",
-      "text": "Ikke her",
-      "phonetic": "ик'э харь",
-      "translation": "Не здесь",
-      "why": "Повтор. Простая, чёткая фраза.",
-      "confidence": 0.98,
-      "start": 42.65,
-      "end": 47.47,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-012",
-      "text": "Når jeg frem til deg",
-      "phonetic": "но: я фрэм тиль дай",
-      "translation": "Доберусь ли я до тебя",
-      "why": "«Når» растягивается. «Jeg» → «я». «Til» чётко. «Deg» → «дай» — типичная разговорная форма.",
-      "confidence": 0.9,
-      "start": 47.47,
-      "end": 49.89,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-013",
-      "text": "Over store hav",
-      "phonetic": "о:вэ сту:рэ хав",
-      "translation": "Через большое море",
-      "why": "«Over» — er на конце почти не слышно. «Store hav» как в припеве.",
-      "confidence": 0.95,
-      "start": 49.87,
-      "end": 52.82,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-014",
-      "text": "Husker du det vi var",
-      "phonetic": "хюскэ ду дэ ви ва:",
-      "translation": "Помнишь ли ты, чем мы были",
-      "why": "«Husker» — er проглатывается. «Det» редуцируется до «дэ». «Var» растягивается.",
-      "confidence": 0.88,
-      "start": 52.8,
-      "end": 55.27,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-015",
-      "text": "Det vi er, og",
-      "phonetic": "дэ ви э / о:",
-      "translation": "То, что мы есть, и",
-      "why": "Максимально сжатая фраза. «Det» → «дэ», «er» почти не слышно, «og» растягивается.",
-      "confidence": 0.85,
-      "start": 55.24,
-      "end": 56.78,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-016",
-      "text": "Det du har her",
-      "phonetic": "дэ ду ха: харь",
-      "translation": "То, что у тебя есть здесь",
-      "why": "«Har» и «her» похожи на слух — отличаются только гласным. Оба мягко произносятся.",
-      "confidence": 0.88,
-      "start": 56.77,
-      "end": 59.9,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-017",
-      "text": "Når jeg frem til deg",
-      "phonetic": "но: я фрэм тиль дай",
-      "translation": "Доберусь ли я до тебя",
-      "why": "Повтор припева. См. sh-012.",
-      "confidence": 0.9,
-      "start": 59.89,
-      "end": 64.76,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-018",
-      "text": "Over store hav",
-      "phonetic": "о:вэ сту:рэ хав",
-      "translation": "Через большое море",
-      "why": "Повтор. См. sh-013.",
-      "confidence": 0.95,
-      "start": 64.75,
-      "end": 67.28,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-019",
-      "text": "Husker du det vi var",
-      "phonetic": "хюскэ ду дэ ви ва:",
-      "translation": "Помнишь ли ты, чем мы были",
-      "why": "Повтор. См. sh-014.",
-      "confidence": 0.88,
-      "start": 67.28,
-      "end": 69.98,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-020",
-      "text": "Det vi er, og",
-      "phonetic": "дэ ви э / о:",
-      "translation": "То, что мы есть, и",
-      "why": "Повтор. См. sh-015.",
-      "confidence": 0.85,
-      "start": 69.95,
-      "end": 71.89,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-021",
-      "text": "Det du har her",
-      "phonetic": "дэ ду ха: харь",
-      "translation": "То, что у тебя есть здесь",
-      "why": "Повтор. См. sh-016.",
-      "confidence": 0.88,
-      "start": 71.87,
-      "end": 74.26,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-022",
-      "text": "Jeg stod igjen",
-      "phonetic": "яй сту: ийэн",
-      "translation": "Я остался стоять",
-      "why": "«Jeg» → «яй/я». «Stod» — d на конце может быть немым. «Igjen» — gj даёт мягкий й-звук.",
-      "confidence": 0.87,
-      "start": 74.25,
-      "end": 81.7,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-023",
-      "text": "Du dro av gårde",
-      "phonetic": "ду дру: а го:рэ",
-      "translation": "Ты уехал",
-      "why": "«Dro» растягивается. «Av» → «а». «Gårde» — å даёт открытое о, d может быть мягким или немым.",
-      "confidence": 0.85,
-      "start": 81.67,
-      "end": 85.93,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-024",
-      "text": "Hva om du glemmer meg - der",
-      "phonetic": "ва ом ду глэмэ май / дэр",
-      "translation": "Что если ты забудешь меня — там",
-      "why": "«Hva» — h немое. «Glemmer» — mm назализуется, er исчезает. «Meg» → «май». «Der» чётко.",
-      "confidence": 0.87,
-      "start": 85.93,
-      "end": 92.21,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-025",
-      "text": "Dager er grå",
-      "phonetic": "да:гэ э гро:",
-      "translation": "Дни серые",
-      "why": "«Dager» — er проглатывается. «Grå» — å даёт долгое открытое о.",
-      "confidence": 0.92,
-      "start": 92.21,
-      "end": 96.27,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-026",
-      "text": "Husker du våre?",
-      "phonetic": "хюскэ ду во:рэ",
-      "translation": "Помнишь ли ты наши?",
-      "why": "«Våre» — å как открытое о, re на конце мягко.",
-      "confidence": 0.9,
-      "start": 96.25,
-      "end": 100.56,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-027",
-      "text": "Kjenner du meg igjen - her",
-      "phonetic": "шэннэ ду май ийэн / харь",
-      "translation": "Узнаёшь ли ты меня снова — здесь",
-      "why": "«Kjenner» — kj даёт шипящий звук, похожий на щ/ш. «Meg» → «май». «Igjen» — мягкий й.",
-      "confidence": 0.88,
-      "start": 100.55,
-      "end": 106.8,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-028",
-      "text": "Men du er ikke her",
-      "phonetic": "мэн ду э ик'э харь",
-      "translation": "Но тебя здесь нет",
-      "why": "Повтор. См. sh-008.",
-      "confidence": 0.92,
-      "start": 106.79,
-      "end": 112.77,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-029",
-      "text": "Ikke her",
-      "phonetic": "ик'э харь",
-      "translation": "Не здесь",
-      "why": "Повтор. См. sh-009.",
-      "confidence": 0.98,
-      "start": 112.75,
-      "end": 113.81,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-030",
-      "text": "Du er ikke her",
-      "phonetic": "ду э ик'э харь",
-      "translation": "Тебя здесь нет",
-      "why": "Повтор. См. sh-010.",
-      "confidence": 0.95,
-      "start": 113.78,
-      "end": 116.41,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-031",
-      "text": "Ikke her",
-      "phonetic": "ик'э харь",
-      "translation": "Не здесь",
-      "why": "Повтор.",
-      "confidence": 0.98,
-      "start": 116.4,
-      "end": 121.13,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-032",
-      "text": "Når jeg frem til deg",
-      "phonetic": "но: я фрэм тиль дай",
-      "translation": "Доберусь ли я до тебя",
-      "why": "Повтор припева.",
-      "confidence": 0.9,
-      "start": 121.11,
-      "end": 123.62,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-033",
-      "text": "Over store hav",
-      "phonetic": "о:вэ сту:рэ хав",
-      "translation": "Через большое море",
-      "why": "Повтор.",
-      "confidence": 0.95,
-      "start": 123.61,
-      "end": 126.58,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-034",
-      "text": "Husker du det vi var",
-      "phonetic": "хюскэ ду дэ ви ва:",
-      "translation": "Помнишь ли ты, чем мы были",
-      "why": "Повтор.",
-      "confidence": 0.88,
-      "start": 126.56,
-      "end": 128.91,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-035",
-      "text": "Det vi er, og",
-      "phonetic": "дэ ви э / о:",
-      "translation": "То, что мы есть, и",
-      "why": "Повтор.",
-      "confidence": 0.85,
-      "start": 128.91,
-      "end": 130.55,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-036",
-      "text": "Det du har her",
-      "phonetic": "дэ ду ха: харь",
-      "translation": "То, что у тебя есть здесь",
-      "why": "Повтор.",
-      "confidence": 0.88,
-      "start": 130.53,
-      "end": 133,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-037",
-      "text": "Når jeg frem til deg",
-      "phonetic": "но: я фрэм тиль дай",
-      "translation": "Доберусь ли я до тебя",
-      "why": "Повтор.",
-      "confidence": 0.9,
-      "start": 133,
-      "end": 138.36,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-038",
-      "text": "Over store hav",
-      "phonetic": "о:вэ сту:рэ хав",
-      "translation": "Через большое море",
-      "why": "Повтор.",
-      "confidence": 0.95,
-      "start": 138.35,
-      "end": 140.79,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-039",
-      "text": "Husker du det vi var",
-      "phonetic": "хюскэ ду дэ ви ва:",
-      "translation": "Помнишь ли ты, чем мы были",
-      "why": "Повтор.",
-      "confidence": 0.88,
-      "start": 140.78,
-      "end": 143.71,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-040",
-      "text": "Det vi er, og",
-      "phonetic": "дэ ви э / о:",
-      "translation": "То, что мы есть, и",
-      "why": "Повтор.",
-      "confidence": 0.85,
-      "start": 143.71,
-      "end": 144.98,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-041",
-      "text": "Det du har her",
-      "phonetic": "дэ ду ха: харь",
-      "translation": "То, что у тебя есть здесь",
-      "why": "Повтор.",
-      "confidence": 0.88,
-      "start": 144.95,
-      "end": 147.61,
-      "learned": false,
-      "phonetic_user": ""
-    }
-  ]
-}{
-  "version": 1,
-  "song": {
-    "id": "store-hav",
-    "title": "Store Hav",
-    "artist": "Kamilla Wigestrand",
-    "language": "no",
-    "languageName": "Norsk",
-    "hint": "Выбери mp3 локально или загрузи с Яндекс.Диска.",
-    "media": {
-      "src": "store-hav.mp3",
-      "yadisk": "https://disk.yandex.ru/d/P9Vu1Wg0Qoo19w"
-    }
-  },
-  "ui": {
-    "showTranslationByDefault": true,
-    "showPhoneticByDefault": true,
-    "showWhyHeardByDefault": true,
-    "showOriginalByDefault": true
-  },
-  "items": [
-    {
-      "id": "sh-002",
-      "text": "Noe er vekk",
-      "phonetic": "нуммэ а сык'",
-      "translation": "Что-то исчезло",
-      "why": "«Noe er» поётся слитно, гласные растягиваются, r исчезает. «Vekk» теряет чёткий k и слышится как короткий резкий звук.",
-      "confidence": 0.9,
-      "start": 5.18,
-      "end": 7.96,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-003",
-      "text": "Hver gang jeg våkner",
-      "phonetic": "ва гом я вокнэ",
-      "translation": "Каждый раз, когда я просыпаюсь",
-      "why": "В «hver gang» r почти не слышно, a редуцируется. «Jeg» звучит как «я/йай». В «våkner» сочетание kn почти исчезает.",
-      "confidence": 0.95,
-      "start": 7.95,
-      "end": 12.32,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-004",
-      "text": "Nå er det bare meg - her",
-      "phonetic": "но а ре боре май / харь",
-      "translation": "Теперь здесь только я",
-      "why": "«Nå er det» поётся как единый поток. «Bare» легко превращается в «боре». «Meg» редуцируется до «май». «Her» часто растворяется в дыхании.",
-      "confidence": 0.9,
-      "start": 14.51,
-      "end": 18.46,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-005",
-      "text": "Finner jeg frem",
-      "phonetic": "фым нэ я фрем",
-      "translation": "Я нахожу путь",
-      "why": "g в «jeg» исчезает, nn в «finner» назализуется. «Frem» звучит чётко.",
-      "confidence": 0.98,
-      "start": 18.45,
-      "end": 22.89,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-006",
-      "text": "Vandrer i tåke",
-      "phonetic": "вомбрэри токе",
-      "translation": "Брожу в тумане",
-      "why": "«Vandrer i» — nd/dr сглаживаются, предлог «i» сливается. «Tåke» — å звучит как открытое о.",
-      "confidence": 0.95,
-      "start": 22.88,
-      "end": 27.12,
       "learned": false,
       "phonetic_user": ""
     },
     {
       "id": "sh-007",
-      "text": "Tror at jeg trenger deg - her",
-      "phonetic": "тру: ат я трэнгэ дай / харь",
-      "translation": "Думаю, что мне нужен ты — здесь",
-      "why": "«Tror» растягивается. «Jeg» → «я». «Trenger» — ng назальное, er редуцируется. «Deg» → «дай». «Her» мягко уходит в дыхание.",
-      "confidence": 0.85,
-      "start": 27.1,
-      "end": 33.62,
-      "learned": false,
-      "phonetic_user": ""
-    },
-    {
-      "id": "sh-008",
       "text": "Men du er ikke her",
       "phonetic": "мэн ду э ик'э харь",
       "translation": "Но тебя здесь нет",
@@ -606,7 +104,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-009",
+      "id": "sh-008",
       "text": "Ikke her",
       "phonetic": "ик'э харь",
       "translation": "Не здесь",
@@ -618,7 +116,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-010",
+      "id": "sh-009",
       "text": "Du er ikke her",
       "phonetic": "ду э ик'э харь",
       "translation": "Тебя здесь нет",
@@ -630,10 +128,10 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-011",
-      "text": "Ikke her",
-      "phonetic": "ик'э харь",
-      "translation": "Не здесь",
+      "id": "sh-010",
+      "text": "Du er ikke her",
+      "phonetic": "ду э ик'э харь",
+      "translation": "Тебя здесь нет",
       "why": "Повтор. Простая, чёткая фраза.",
       "confidence": 0.98,
       "start": 42.65,
@@ -642,7 +140,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-012",
+      "id": "sh-011",
       "text": "Når jeg frem til deg",
       "phonetic": "но: я фрэм тиль дай",
       "translation": "Доберусь ли я до тебя",
@@ -654,7 +152,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-013",
+      "id": "sh-012",
       "text": "Over store hav",
       "phonetic": "о:вэ сту:рэ хав",
       "translation": "Через большое море",
@@ -666,7 +164,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-014",
+      "id": "sh-013",
       "text": "Husker du det vi var",
       "phonetic": "хюскэ ду дэ ви ва:",
       "translation": "Помнишь ли ты, чем мы были",
@@ -678,7 +176,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-015",
+      "id": "sh-014",
       "text": "Det vi er, og",
       "phonetic": "дэ ви э / о:",
       "translation": "То, что мы есть, и",
@@ -690,7 +188,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-016",
+      "id": "sh-015",
       "text": "Det du har her",
       "phonetic": "дэ ду ха: харь",
       "translation": "То, что у тебя есть здесь",
@@ -702,11 +200,11 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-017",
+      "id": "sh-016",
       "text": "Når jeg frem til deg",
       "phonetic": "но: я фрэм тиль дай",
       "translation": "Доберусь ли я до тебя",
-      "why": "Повтор припева. См. sh-012.",
+      "why": "Повтор припева. См. sh-011.",
       "confidence": 0.9,
       "start": 59.89,
       "end": 64.76,
@@ -714,11 +212,11 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-018",
+      "id": "sh-017",
       "text": "Over store hav",
       "phonetic": "о:вэ сту:рэ хав",
       "translation": "Через большое море",
-      "why": "Повтор. См. sh-013.",
+      "why": "Повтор. См. sh-012.",
       "confidence": 0.95,
       "start": 64.75,
       "end": 67.28,
@@ -726,11 +224,11 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-019",
+      "id": "sh-018",
       "text": "Husker du det vi var",
       "phonetic": "хюскэ ду дэ ви ва:",
       "translation": "Помнишь ли ты, чем мы были",
-      "why": "Повтор. См. sh-014.",
+      "why": "Повтор. См. sh-013.",
       "confidence": 0.88,
       "start": 67.28,
       "end": 69.98,
@@ -738,11 +236,11 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-020",
+      "id": "sh-019",
       "text": "Det vi er, og",
       "phonetic": "дэ ви э / о:",
       "translation": "То, что мы есть, и",
-      "why": "Повтор. См. sh-015.",
+      "why": "Повтор. См. sh-014.",
       "confidence": 0.85,
       "start": 69.95,
       "end": 71.89,
@@ -750,11 +248,11 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-021",
+      "id": "sh-020",
       "text": "Det du har her",
       "phonetic": "дэ ду ха: харь",
       "translation": "То, что у тебя есть здесь",
-      "why": "Повтор. См. sh-016.",
+      "why": "Повтор. См. sh-015.",
       "confidence": 0.88,
       "start": 71.87,
       "end": 74.26,
@@ -762,7 +260,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-022",
+      "id": "sh-021",
       "text": "Jeg stod igjen",
       "phonetic": "яй сту: ийэн",
       "translation": "Я остался стоять",
@@ -774,7 +272,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-023",
+      "id": "sh-022",
       "text": "Du dro av gårde",
       "phonetic": "ду дру: а го:рэ",
       "translation": "Ты уехал",
@@ -786,7 +284,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-024",
+      "id": "sh-023",
       "text": "Hva om du glemmer meg - der",
       "phonetic": "ва ом ду глэмэ май / дэр",
       "translation": "Что если ты забудешь меня — там",
@@ -798,7 +296,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-025",
+      "id": "sh-024",
       "text": "Dager er grå",
       "phonetic": "да:гэ э гро:",
       "translation": "Дни серые",
@@ -810,7 +308,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-026",
+      "id": "sh-025",
       "text": "Husker du våre?",
       "phonetic": "хюскэ ду во:рэ",
       "translation": "Помнишь ли ты наши?",
@@ -822,7 +320,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-027",
+      "id": "sh-026",
       "text": "Kjenner du meg igjen - her",
       "phonetic": "шэннэ ду май ийэн / харь",
       "translation": "Узнаёшь ли ты меня снова — здесь",
@@ -834,11 +332,11 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-028",
+      "id": "sh-027",
       "text": "Men du er ikke her",
       "phonetic": "мэн ду э ик'э харь",
       "translation": "Но тебя здесь нет",
-      "why": "Повтор. См. sh-008.",
+      "why": "Повтор. См. sh-007.",
       "confidence": 0.92,
       "start": 106.79,
       "end": 112.77,
@@ -846,11 +344,11 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-029",
+      "id": "sh-028",
       "text": "Ikke her",
       "phonetic": "ик'э харь",
       "translation": "Не здесь",
-      "why": "Повтор. См. sh-009.",
+      "why": "Повтор. См. sh-008.",
       "confidence": 0.98,
       "start": 112.75,
       "end": 113.81,
@@ -858,11 +356,11 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-030",
+      "id": "sh-029",
       "text": "Du er ikke her",
       "phonetic": "ду э ик'э харь",
       "translation": "Тебя здесь нет",
-      "why": "Повтор. См. sh-010.",
+      "why": "Повтор. См. sh-009.",
       "confidence": 0.95,
       "start": 113.78,
       "end": 116.41,
@@ -870,7 +368,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-031",
+      "id": "sh-030",
       "text": "Ikke her",
       "phonetic": "ик'э харь",
       "translation": "Не здесь",
@@ -882,7 +380,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-032",
+      "id": "sh-031",
       "text": "Når jeg frem til deg",
       "phonetic": "но: я фрэм тиль дай",
       "translation": "Доберусь ли я до тебя",
@@ -894,7 +392,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-033",
+      "id": "sh-032",
       "text": "Over store hav",
       "phonetic": "о:вэ сту:рэ хав",
       "translation": "Через большое море",
@@ -906,7 +404,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-034",
+      "id": "sh-033",
       "text": "Husker du det vi var",
       "phonetic": "хюскэ ду дэ ви ва:",
       "translation": "Помнишь ли ты, чем мы были",
@@ -918,7 +416,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-035",
+      "id": "sh-034",
       "text": "Det vi er, og",
       "phonetic": "дэ ви э / о:",
       "translation": "То, что мы есть, и",
@@ -930,7 +428,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-036",
+      "id": "sh-035",
       "text": "Det du har her",
       "phonetic": "дэ ду ха: харь",
       "translation": "То, что у тебя есть здесь",
@@ -942,7 +440,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-037",
+      "id": "sh-036",
       "text": "Når jeg frem til deg",
       "phonetic": "но: я фрэм тиль дай",
       "translation": "Доберусь ли я до тебя",
@@ -954,7 +452,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-038",
+      "id": "sh-037",
       "text": "Over store hav",
       "phonetic": "о:вэ сту:рэ хав",
       "translation": "Через большое море",
@@ -966,7 +464,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-039",
+      "id": "sh-038",
       "text": "Husker du det vi var",
       "phonetic": "хюскэ ду дэ ви ва:",
       "translation": "Помнишь ли ты, чем мы были",
@@ -978,7 +476,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-040",
+      "id": "sh-039",
       "text": "Det vi er, og",
       "phonetic": "дэ ви э / о:",
       "translation": "То, что мы есть, и",
@@ -990,7 +488,7 @@
       "phonetic_user": ""
     },
     {
-      "id": "sh-041",
+      "id": "sh-040",
       "text": "Det du har her",
       "phonetic": "дэ ду ха: харь",
       "translation": "То, что у тебя есть здесь",
