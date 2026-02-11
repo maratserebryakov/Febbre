@@ -81,15 +81,6 @@
     });
     return out;
   }
-
-  /* ── Yandex Disk direct link ── */
-    function yadiskDirectUrl(publicUrl) {
-    // Яндекс.Диск: превращаем публичную ссылку в прямую ссылку скачивания
-    // https://disk.yandex.ru/i/XXXX → https://getfile.dokpub.com/yandex/get/https://disk.yandex.ru/i/XXXX
-    // Альтернатива: просто открываем в новой вкладке для ручного скачивания
-    return "https://getfile.dokpub.com/yandex/get/" + publicUrl;
-  }
-
   /* ══════════════════════════════════════
      SONG PAGE
      ══════════════════════════════════════ */
@@ -195,19 +186,17 @@
       if (!yadiskUrl) {
         btnLoadYaDisk.style.display = "none";
       } else {
-        btnLoadYaDisk.addEventListener("click", async () => {
-          btnLoadYaDisk.disabled = true;
-          btnLoadYaDisk.textContent = "⏳ Загрузка…";
-          try {
-            const direct = await yadiskDirectUrl(yadiskUrl);
-            setSrc(direct, "remote");
-            toast("Загружено с Яндекс.Диска");
-          } catch (e) {
-            toast("Ошибка загрузки с Яндекс.Диска", String(e));
-          } finally {
-            btnLoadYaDisk.disabled = false;
-            btnLoadYaDisk.textContent = "☁️ Яндекс.Диск";
-          }
+                        btnLoadYaDisk.addEventListener("click", () => {
+          window.open(yadiskUrl, "_blank");
+          
+          // Подсвечиваем кнопку «Выбрать файл» пульсацией
+          btnLoadLocal.classList.add("pulse");
+          setTimeout(() => btnLoadLocal.classList.remove("pulse"), 6000);
+          
+          toast(
+            "📥 Скачайте файл с Яндекс.Диска",
+            "Затем нажмите мигающую кнопку «📁 Выбрать файл»"
+          );
         });
       }
     }
