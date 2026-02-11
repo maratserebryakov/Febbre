@@ -560,6 +560,57 @@
     /* ── start ── */
     renderLines();
     setActive(0, false);
+      /* ── keyboard shortcuts ── */
+    document.addEventListener("keydown", (e) => {
+      // Не перехватывать, если фокус в текстовом поле
+      const tag = (e.target.tagName || "").toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select") return;
+
+      const key = e.key.toLowerCase();
+
+      if (key === " " || key === "spacebar") {
+        e.preventDefault();
+        if (player.paused) player.play().catch(() => {});
+        else player.pause();
+      }
+
+      if (key === "s") {
+        e.preventDefault();
+        btnStart.click();
+        toast("⏱ Start = " + player.currentTime.toFixed(2));
+      }
+
+      if (key === "e") {
+        e.preventDefault();
+        btnEnd.click();
+        // Автопереход к следующей строке
+        const next = Math.min(activeIndex + 1, state.items.length - 1);
+        if (next !== activeIndex) {
+          setTimeout(() => setActive(next, false), 100);
+        }
+        toast("⏱ End = " + player.currentTime.toFixed(2) + " → строка " + (next + 1));
+      }
+
+      if (key === "arrowdown" || key === "n") {
+        e.preventDefault();
+        const next = Math.min(activeIndex + 1, state.items.length - 1);
+        setActive(next, false);
+      }
+
+      if (key === "arrowup" || key === "p") {
+        e.preventDefault();
+        const prev = Math.max(activeIndex - 1, 0);
+        setActive(prev, false);
+      }
+
+      if (key === "r") {
+        e.preventDefault();
+        playSegment();
+      }
+    });
+
+    /* ── hint about shortcuts ── */
+    toast("⌨ Горячие клавиши: S=Start, E=End, Space=Play, ↑↓=строки, R=фрагмент");
   }
 
   /* ══════════════════════════════════════
