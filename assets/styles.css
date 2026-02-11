@@ -341,3 +341,13 @@ textarea { width: 100%; min-height: 110px; resize: vertical; }
 .songTitle { font-size: 18px; font-weight: 700; color: #c084fc; }
 .songMeta { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
 .songSmall { font-size: 13px; color: #a1a1aa; margin-top: 6px; }
+
+/* ═══ Pulse animation for "choose file" hint ═══ */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(124, 58, 237, 0); }
+}
+.pulse {
+  animation: pulse-glow 1s ease-in-out infinite;
+  border-color: #7c3aed !important;
+}
