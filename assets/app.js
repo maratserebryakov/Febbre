@@ -47,6 +47,22 @@
     return r.json();
   }
 
+  /* ── cookie / storage consent ── */
+  function showStorageConsent() {
+    const KEY = "lyricear_storage_ok";
+    if (localStorage.getItem(KEY)) return;
+    const bar = document.createElement("div");
+    bar.id = "storageBanner";
+    bar.innerHTML =
+      `<span>Этот сайт сохраняет ваш прогресс в браузере (localStorage). Никакие данные не передаются на сервер.</span>
+       <button id="storageOk">Понятно</button>`;
+    document.body.appendChild(bar);
+    $("#storageOk").addEventListener("click", () => {
+      localStorage.setItem(KEY, "1");
+      bar.remove();
+    });
+  }
+
   /* ── state helpers ── */
   function normalizeState(s) {
     s.ui = Object.assign(
@@ -63,7 +79,7 @@
       if (!("end" in it)) it.end = null;
       if (typeof it.learned !== "boolean") it.learned = false;
       if (typeof it.confidence !== "number") it.confidence = null;
-      if (typeof it.phonetic_user !== "string") it.phonetic_user = it.phonetic_user || "";
+      if (typeof it.phonetic_user !== "string") it.phonetic_user = "";
     });
   }
 
@@ -81,6 +97,7 @@
     });
     return out;
   }
+
   /* ══════════════════════════════════════
      SONG PAGE
      ══════════════════════════════════════ */
@@ -89,7 +106,7 @@
     if (!root.dataset.songJson) return;
 
     const SONG_JSON_URL = root.dataset.songJson;
-    const PREFIX = "multisong_trainer_v1::";
+    const PREFIX = "lyricear_v1::";
 
     /* ── load state ── */
     let state;
@@ -129,13 +146,13 @@
 
     const globalShowOrig = $("#globalShowOrig");
     const globalShowTrans = $("#globalShowTrans");
+    const globalShowPhon = $("#globalShowPhon");
     const globalShowWhy = $("#globalShowWhy");
 
     const linesHost = $("#lines");
 
     let activeIndex = 0;
     let loopTimer = null;
-    let mediaSource = "none"; // "none" | "local" | "remote"
 
     /* ── header ── */
     function applyHeader() {
@@ -148,11 +165,10 @@
 
     /* ── lamp ── */
     function setLamp(source) {
-      mediaSource = source;
       if (!lamp) return;
       lamp.className = "lamp";
       if (source === "local") { lamp.classList.add("lamp-green"); lamp.title = "Локальный файл"; }
-      else if (source === "remote") { lamp.classList.add("lamp-red"); lamp.title = "Файл из интернета (Яндекс.Диск)"; }
+      else if (source === "remote") { lamp.classList.add("lamp-red"); lamp.title = "Файл из интернета"; }
       else { lamp.classList.add("lamp-off"); lamp.title = "Медиа не загружено"; }
     }
     setLamp("none");
@@ -164,8 +180,12 @@
     }
 
     /* ── save ── */
+    let saveTimer = null;
     function save() {
-      try { localStorage.setItem(state._storageKey, JSON.stringify(state)); } catch {}
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        try { localStorage.setItem(state._storageKey, JSON.stringify(state)); } catch {}
+      }, 300);
     }
 
     /* ── local file ── */
@@ -178,10 +198,11 @@
       player._objUrl = url;
       setSrc(url, "local");
       toast("Открыт локальный файл", f.name);
+      if (btnLoadLocal) btnLoadLocal.classList.remove("pulse");
     });
 
     /* ── Yandex.Disk ── */
-        if (btnLoadYaDisk) {
+    if (btnLoadYaDisk) {
       const yadiskUrl = state.song?.media?.yadisk;
       if (!yadiskUrl) {
         btnLoadYaDisk.style.display = "none";
@@ -190,7 +211,7 @@
           window.open(yadiskUrl, "_blank");
           if (btnLoadLocal) {
             btnLoadLocal.classList.add("pulse");
-            setTimeout(() => btnLoadLocal.classList.remove("pulse"), 6000);
+            setTimeout(() => btnLoadLocal.classList.remove("pulse"), 8000);
           }
           toast(
             "📥 Скачайте файл с Яндекс.Диска",
@@ -211,7 +232,7 @@
     });
     player.addEventListener("error", () => {
       const err = player.error ? "код " + player.error.code : "неизвестно";
-      toast("Ошибка загрузки медиа", err + ". Проверь путь/имя.");
+      toast("Ошибка загрузки медиа", err);
       setLamp("none");
     });
 
@@ -307,13 +328,14 @@
 
     /* ── render lines ── */
     function renderLines() {
-      const showOrig = globalShowOrig.checked;
-      const showTrans = globalShowTrans.checked;
-      const showWhy = globalShowWhy.checked;
+      const showOrig = globalShowOrig?.checked || false;
+      const showTrans = globalShowTrans?.checked || false;
+      const showPhon = globalShowPhon?.checked || false;
+      const showWhy = globalShowWhy?.checked || false;
 
-      // save UI prefs
       state.ui.showOriginalByDefault = showOrig;
       state.ui.showTranslationByDefault = showTrans;
+      state.ui.showPhoneticByDefault = showPhon;
       state.ui.showWhyHeardByDefault = showWhy;
 
       linesHost.innerHTML = "";
@@ -322,12 +344,11 @@
         const isActive = idx === activeIndex;
         const hasTime = it.start != null && it.end != null && Number(it.end) > Number(it.start);
 
-        /* ── line container ── */
         const line = document.createElement("div");
         line.className = "line" + (isActive ? " active" : "") + (it.learned ? " learned" : "");
         line.dataset.idx = idx;
 
-        /* ── line number + user phonetic ── */
+        /* ── line number + user phonetic input ── */
         const header = document.createElement("div");
         header.className = "line-header";
 
@@ -335,7 +356,6 @@
         num.className = "line-num";
         num.textContent = String(idx + 1);
 
-        // user phonetic input
         const userInput = document.createElement("input");
         userInput.type = "text";
         userInput.className = "user-heard";
@@ -346,6 +366,7 @@
           save();
         });
         userInput.addEventListener("click", e => e.stopPropagation());
+        userInput.addEventListener("focus", e => e.stopPropagation());
 
         header.appendChild(num);
         header.appendChild(userInput);
@@ -353,13 +374,12 @@
         /* ── original text (hidden by default) ── */
         const origRow = document.createElement("div");
         origRow.className = "orig-row";
-        // individual reveal state
         let origRevealed = showOrig;
 
-        const origText = document.createElement("div");
+        const origText = document.createElement("span");
         origText.className = "orig-text";
         origText.textContent = it.text || "—";
-        origText.style.display = origRevealed ? "block" : "none";
+        origText.style.display = origRevealed ? "inline" : "none";
 
         const btnReveal = document.createElement("button");
         btnReveal.className = "tiny btn-reveal";
@@ -367,39 +387,41 @@
         btnReveal.addEventListener("click", e => {
           e.stopPropagation();
           origRevealed = !origRevealed;
-          origText.style.display = origRevealed ? "block" : "none";
+          origText.style.display = origRevealed ? "inline" : "none";
           btnReveal.textContent = origRevealed ? "👁 Скрыть" : "👁 Показать";
         });
 
         origRow.appendChild(btnReveal);
         origRow.appendChild(origText);
 
+        /* ── author phonetic (collapsible) ── */
+        const phonRow = document.createElement("div");
+        phonRow.className = "sub sub-phon" + (showPhon ? " visible" : "");
+        if (it.phonetic) {
+          phonRow.innerHTML =
+            `<div class="subCard"><b>👂 Автор слышит:</b> <span class="mono phon-author">${esc(it.phonetic)}</span></div>`;
+        }
+
         /* ── translation (collapsible) ── */
         const transRow = document.createElement("div");
         transRow.className = "sub sub-trans" + (showTrans ? " visible" : "");
         if (it.translation) {
-          transRow.innerHTML = `<div class="subCard"><span class="muted">Перевод:</span> ${esc(it.translation)}</div>`;
+          transRow.innerHTML =
+            `<div class="subCard"><span class="muted">Перевод:</span> ${esc(it.translation)}</div>`;
         }
 
-        /* ── phonetic from author ── */
-        const phonRow = document.createElement("div");
-        phonRow.className = "sub sub-phon";
-        if (it.phonetic) {
-          phonRow.innerHTML = `<div class="subCard"><b>👂 Фонетика (автор):</b> <span class="mono">${esc(it.phonetic)}</span></div>`;
-        }
-
-        /* ── why heard ── */
+        /* ── why heard (collapsible) ── */
         const whyRow = document.createElement("div");
         whyRow.className = "sub sub-why" + (showWhy ? " visible" : "");
         if (it.why) {
           const conf = typeof it.confidence === "number"
-            ? ` <span class="pill">уверенность: ${(clamp01(it.confidence) * 100).toFixed(0)}%</span>` : "";
+            ? ` <span class="pill">≈${(clamp01(it.confidence) * 100).toFixed(0)}%</span>` : "";
           whyRow.innerHTML =
             `<div class="subCard">
-              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                 <b>🧠 Почему так слышится:</b>${conf}
               </div>
-              <div style="margin-top:6px;">${esc(it.why)}</div>
+              <div style="margin-top:4px;">${esc(it.why)}</div>
             </div>`;
         }
 
@@ -417,24 +439,17 @@
 
         actions.appendChild(mkBtn("Выбрать", "tiny btn-primary", () => setActive(idx, true)));
 
-        if (hasTime) {
+        if (hasTime)
           actions.appendChild(mkBtn("▶", "tiny", () => { setActive(idx, false); playSegment(); }));
-        }
 
-        // toggle translation per-line
+        if (it.phonetic)
+          actions.appendChild(mkBtn("👂", "tiny", () => phonRow.classList.toggle("visible")));
+
         actions.appendChild(mkBtn("💬", "tiny", () => transRow.classList.toggle("visible")));
 
-        // toggle phonetic per-line
-        if (it.phonetic) {
-          actions.appendChild(mkBtn("👂", "tiny", () => phonRow.classList.toggle("visible")));
-        }
-
-        // toggle why per-line
-        if (it.why) {
+        if (it.why)
           actions.appendChild(mkBtn("🧠", "tiny", () => whyRow.classList.toggle("visible")));
-        }
 
-        // learned toggle
         actions.appendChild(mkBtn(
           it.learned ? "✓ Выучено" : "Выучено",
           "tiny " + (it.learned ? "btn-good" : ""),
@@ -444,8 +459,8 @@
         /* ── assemble ── */
         line.appendChild(header);
         line.appendChild(origRow);
-        line.appendChild(transRow);
         line.appendChild(phonRow);
+        line.appendChild(transRow);
         line.appendChild(whyRow);
         line.appendChild(actions);
 
@@ -454,13 +469,13 @@
       });
 
       renderSegStatus();
+      save();
     }
 
     /* ── JSON tools ── */
     jsonBox.value = JSON.stringify(state, null, 2);
 
     btnExport.addEventListener("click", async () => {
-      // clean internal keys before export
       const out = structuredClone(state);
       delete out._storageKey;
       const txt = JSON.stringify(out, null, 2);
@@ -505,6 +520,7 @@
     });
 
     btnReset.addEventListener("click", async () => {
+      if (!confirm("Сбросить все изменения к исходным данным?")) return;
       try {
         const remote = await fetchJson(SONG_JSON_URL);
         const key = state._storageKey;
@@ -521,15 +537,16 @@
     });
 
     /* ── global toggles ── */
-    globalShowOrig.checked = !!state.ui.showOriginalByDefault;
-    globalShowTrans.checked = !!state.ui.showTranslationByDefault;
-    globalShowWhy.checked = !!state.ui.showWhyHeardByDefault;
+    if (globalShowOrig) globalShowOrig.checked = !!state.ui.showOriginalByDefault;
+    if (globalShowTrans) globalShowTrans.checked = !!state.ui.showTranslationByDefault;
+    if (globalShowPhon) globalShowPhon.checked = !!state.ui.showPhoneticByDefault;
+    if (globalShowWhy) globalShowWhy.checked = !!state.ui.showWhyHeardByDefault;
 
-    globalShowOrig.addEventListener("change", renderLines);
-    globalShowTrans.addEventListener("change", renderLines);
-    globalShowWhy.addEventListener("change", renderLines);
+    [globalShowOrig, globalShowTrans, globalShowPhon, globalShowWhy].forEach(el => {
+      if (el) el.addEventListener("change", renderLines);
+    });
 
-    /* ── video dock on scroll (portrait mobile) ── */
+    /* ── video dock ── */
     const dock = $("#videoDock");
     const sentinel = $("#videoDockSentinel");
     if (dock && sentinel && window.IntersectionObserver) {
@@ -546,7 +563,7 @@
   }
 
   /* ══════════════════════════════════════
-     HOME PAGE (catalog)
+     HOME PAGE
      ══════════════════════════════════════ */
   async function bootHome() {
     const root = document.documentElement;
@@ -598,6 +615,7 @@
 
   /* ── boot ── */
   window.addEventListener("DOMContentLoaded", () => {
+    showStorageConsent();
     bootSongPage();
     bootHome();
   });
