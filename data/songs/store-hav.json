@@ -19,7 +19,6 @@
     "showWhyHeardByDefault": false
   },
   "items": [
-    { "id": "sh-001", "text": "Store hav", "phonetic": "сту:рэ хав", "translation": "Большое море", "why": "«Store» поётся протяжно, o звучит как у:. «Hav» чётко — простое односложное слово.", "confidence": 0.95 },
     { "id": "sh-002", "text": "Noe er vekk", "phonetic": "нуммэ а сык'", "translation": "Что-то исчезло", "why": "«Noe er» поётся слитно, гласные растягиваются, r исчезает. «Vekk» теряет чёткий k и слышится как короткий резкий звук.", "confidence": 0.9 },
     { "id": "sh-003", "text": "Hver gang jeg våkner", "phonetic": "ва гом я вокнэ", "translation": "Каждый раз, когда я просыпаюсь", "why": "В «hver gang» r почти не слышно, a редуцируется. «Jeg» звучит как «я/йай». В «våkner» сочетание kn почти исчезает.", "confidence": 0.95 },
     { "id": "sh-004", "text": "Nå er det bare meg - her", "phonetic": "но а ре боре май / харь", "translation": "Теперь здесь только я", "why": "«Nå er det» поётся как единый поток. «Bare» легко превращается в «боре». «Meg» редуцируется до «май». «Her» часто растворяется в дыхании.", "confidence": 0.9 },
