@@ -181,18 +181,17 @@
     });
 
     /* ── Yandex.Disk ── */
-    if (btnLoadYaDisk) {
+        if (btnLoadYaDisk) {
       const yadiskUrl = state.song?.media?.yadisk;
       if (!yadiskUrl) {
         btnLoadYaDisk.style.display = "none";
       } else {
-                        btnLoadYaDisk.addEventListener("click", () => {
+        btnLoadYaDisk.addEventListener("click", () => {
           window.open(yadiskUrl, "_blank");
-          
-          // Подсвечиваем кнопку «Выбрать файл» пульсацией
-          btnLoadLocal.classList.add("pulse");
-          setTimeout(() => btnLoadLocal.classList.remove("pulse"), 6000);
-          
+          if (btnLoadLocal) {
+            btnLoadLocal.classList.add("pulse");
+            setTimeout(() => btnLoadLocal.classList.remove("pulse"), 6000);
+          }
           toast(
             "📥 Скачайте файл с Яндекс.Диска",
             "Затем нажмите мигающую кнопку «📁 Выбрать файл»"
