@@ -3,28 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Store Hav — Учим на слух</title>
+  <title>Store Hav — LyricEar</title>
   <link rel="stylesheet" href="../../assets/styles.css" />
 </head>
 <body>
-  <!-- LOGO — ссылка на главную -->
-<a href="/" class="logo-link">
+
+<a href="../../" class="logo-link">
   <svg class="logo-svg" width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- dark circle base -->
     <circle cx="22" cy="22" r="21" fill="#111118" stroke="url(#logoRim)" stroke-width="1"/>
-    <!-- aurora arcs -->
-    <path d="M8 28 C12 14, 20 10, 22 10 C24 10, 32 14, 36 28"
-          stroke="url(#auroraG)" stroke-width="1.2" fill="none" opacity="0.9"/>
-    <path d="M10 30 C14 18, 19 14, 22 14 C25 14, 30 18, 34 30"
-          stroke="url(#auroraG)" stroke-width="0.8" fill="none" opacity="0.5"/>
-    <path d="M12 32 C15 22, 19 18, 22 18 C25 18, 29 22, 32 32"
-          stroke="url(#auroraG)" stroke-width="0.6" fill="none" opacity="0.3"/>
-    <!-- sound wave -->
-    <path d="M10 33 Q14 30, 16 33 T22 33 T28 33 T34 33"
-          stroke="#c084fc" stroke-width="1" fill="none" opacity="0.7"/>
-    <path d="M12 36 Q16 34, 18 36 T24 36 T30 36"
-          stroke="#22d3ee" stroke-width="0.6" fill="none" opacity="0.4"/>
-    <!-- star dot -->
+    <path d="M8 28 C12 14,20 10,22 10 C24 10,32 14,36 28" stroke="url(#auroraG)" stroke-width="1.2" fill="none" opacity="0.9"/>
+    <path d="M10 30 C14 18,19 14,22 14 C25 14,30 18,34 30" stroke="url(#auroraG)" stroke-width="0.8" fill="none" opacity="0.5"/>
+    <path d="M12 32 C15 22,19 18,22 18 C25 18,29 22,32 32" stroke="url(#auroraG)" stroke-width="0.6" fill="none" opacity="0.3"/>
+    <path d="M10 33 Q14 30,16 33 T22 33 T28 33 T34 33" stroke="#c084fc" stroke-width="1" fill="none" opacity="0.7"/>
+    <path d="M12 36 Q16 34,18 36 T24 36 T30 36" stroke="#22d3ee" stroke-width="0.6" fill="none" opacity="0.4"/>
     <circle cx="22" cy="11" r="1.2" fill="#f0abfc" opacity="0.9"/>
     <defs>
       <linearGradient id="logoRim" x1="0" y1="0" x2="44" y2="44">
@@ -44,89 +35,81 @@
     <span class="logo-sub">учим языки на слух</span>
   </span>
 </a>
-  <div id="pageHeader">
-    <h1>🎵 <span id="songTitle">Store Hav</span> — <span id="songArtist">Kamilla Wigestrand</span></h1>
-    <p class="hint">
-      <span id="songLang">Norsk</span> · <span id="songHint"></span>
-    </p>
-  </div>
 
-  <div id="jsNotRunning">
-    <div style="font-weight:800;margin-bottom:6px;">Скрипт не запустился</div>
-    <div style="opacity:.9">Попробуйте другой браузер или отключите блокировщики скриптов.</div>
-  </div>
+<div id="pageHeader">
+  <h1>🎵 <span id="songTitle">Store Hav</span> — <span id="songArtist">Kamilla Wigestrand</span></h1>
+  <p class="hint"><span id="songLang">Norsk</span> · <span id="songHint"></span></p>
+</div>
 
-  <div class="layout">
-    <!-- LEFT -->
-    <div class="panel playerWrap">
-      <div class="media-row">
-        <button class="ghost" id="btnLoadLocal">📁 Выбрать файл</button>
-        <input type="file" id="mediaPick" accept="audio/*,video/*" style="display:none" />
-        <button class="primary" id="btnLoadYaDisk">☁️ Яндекс.Диск</button>
-        <span class="lamp-wrap">
-  <span class="lamp-label">media</span>
-  <span id="mediaLamp" class="lamp lamp-off"></span>
-</span>
-        <span class="pill">⏱ <span id="tNow" class="mono">0.00</span>s</span>
-      </div>
+<div id="jsNotRunning">
+  <div style="font-weight:800;margin-bottom:6px;">Скрипт не запустился</div>
+  <div style="opacity:.9">Попробуйте другой браузер или отключите блокировщики скриптов.</div>
+</div>
 
-      <div id="videoDockSentinel" class="videoDockSentinel"></div>
-      <div id="videoDock" class="videoDock">
-        <audio id="player" controls preload="metadata" style="width:100%;border-radius:12px;"></audio>
-      </div>
-
-      <div class="sep"></div>
-
-      <div id="segStatus"></div>
-      <div class="topbar">
-        <button class="warn" id="btnPlaySeg" disabled>▶ Фрагмент</button>
-        <button class="ghost" id="btnStart" disabled>⏱ Start</button>
-        <button class="ghost" id="btnEnd" disabled>⏱ End</button>
-        <button class="bad" id="btnClear" disabled>✕ Сброс</button>
-      </div>
-
-      <div class="topbar">
-        <label style="font-size:13px;cursor:pointer;user-select:none;">
-          <input type="checkbox" id="loopToggle" /> 🔁 Зациклить
-        </label>
-        <label style="font-size:13px;cursor:pointer;user-select:none;">
-          <input type="checkbox" id="autoNextToggle" /> ⏭ Авто-следующая
-        </label>
-      </div>
-
-      <div class="sep"></div>
-
-      <div class="toggleRow">
-        <label><input type="checkbox" id="globalShowOrig" /> 👁 Оригинал</label>
-        <label><input type="checkbox" id="globalShowTrans" /> 💬 Переводы</label>
-        <label><input type="checkbox" id="globalShowWhy" /> 🧠 Почему так</label>
-      </div>
-
-      <div class="sep"></div>
-
-      <details>
-        <summary class="mini" style="cursor:pointer;margin-bottom:8px;">🔧 Экспорт / Импорт JSON</summary>
-        <textarea id="jsonBox" placeholder="JSON…"></textarea>
-        <div class="topbar" style="margin-top:8px;">
-          <button class="ghost" id="btnExport">Экспорт</button>
-          <button class="ghost" id="btnImport">Импорт</button>
-          <button class="bad" id="btnReset">Сброс</button>
-          <label class="ghost" style="padding:8px 10px;border-radius:10px;cursor:pointer;">
-            📂 JSON
-            <input type="file" id="filePick" accept=".json,application/json" style="display:none" />
-          </label>
-        </div>
-      </details>
+<div class="layout">
+  <div class="panel playerWrap">
+    <div class="media-row">
+      <button class="ghost" id="btnLoadLocal">📁 Выбрать файл</button>
+      <input type="file" id="mediaPick" accept="audio/*,video/*" style="display:none" />
+      <button class="primary" id="btnLoadYaDisk">☁️ Яндекс.Диск</button>
+      <span class="lamp-wrap">
+        <span class="lamp-label">media</span>
+        <span id="mediaLamp" class="lamp lamp-off"></span>
+      </span>
+      <span class="pill">⏱ <span id="tNow" class="mono">0.00</span>s</span>
     </div>
 
-    <!-- RIGHT -->
-    <div class="panel" id="phrasesPanel">
-      <div id="lines"></div>
+    <div id="videoDockSentinel" class="videoDockSentinel"></div>
+    <div id="videoDock" class="videoDock">
+      <audio id="player" controls preload="metadata" style="width:100%;border-radius:12px;"></audio>
     </div>
+
+    <div class="sep"></div>
+    <div id="segStatus"></div>
+    <div class="topbar">
+      <button class="warn" id="btnPlaySeg" disabled>▶ Фрагмент</button>
+      <button class="ghost" id="btnStart" disabled>⏱ Start</button>
+      <button class="ghost" id="btnEnd" disabled>⏱ End</button>
+      <button class="bad" id="btnClear" disabled>✕ Сброс</button>
+    </div>
+    <div class="topbar">
+      <label style="font-size:13px;cursor:pointer;user-select:none;">
+        <input type="checkbox" id="loopToggle" /> 🔁 Зациклить
+      </label>
+      <label style="font-size:13px;cursor:pointer;user-select:none;">
+        <input type="checkbox" id="autoNextToggle" /> ⏭ Авто
+      </label>
+    </div>
+
+    <div class="sep"></div>
+    <div class="toggleRow">
+      <label><input type="checkbox" id="globalShowOrig" /> 👁 Оригинал</label>
+      <label><input type="checkbox" id="globalShowTrans" /> 💬 Переводы</label>
+      <label><input type="checkbox" id="globalShowWhy" /> 🧠 Почему</label>
+    </div>
+
+    <div class="sep"></div>
+    <details>
+      <summary class="mini" style="cursor:pointer;margin-bottom:8px;">🔧 JSON</summary>
+      <textarea id="jsonBox" placeholder="JSON…"></textarea>
+      <div class="topbar" style="margin-top:8px;">
+        <button class="ghost" id="btnExport">Экспорт</button>
+        <button class="ghost" id="btnImport">Импорт</button>
+        <button class="bad" id="btnReset">Сброс</button>
+        <label class="ghost" style="padding:8px 10px;border-radius:10px;cursor:pointer;">
+          📂 JSON <input type="file" id="filePick" accept=".json" style="display:none" />
+        </label>
+      </div>
+    </details>
   </div>
 
-  <div id="toast"></div>
-  <script>try{document.documentElement.classList.add('js');}catch{}</script>
-  <script src="../../assets/app.js"></script>
+  <div class="panel" id="phrasesPanel">
+    <div id="lines"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script>try{document.documentElement.classList.add('js');}catch{}</script>
+<script src="../../assets/app.js"></script>
 </body>
 </html>
