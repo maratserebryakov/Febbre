@@ -200,7 +200,6 @@
       toast("Открыт локальный файл", f.name);
       if (btnLoadLocal) btnLoadLocal.classList.remove("pulse");
     });
-
     /* ── Yandex.Disk ── */
     if (btnLoadYaDisk) {
       const yadiskUrl = state.song?.media?.yadisk;
@@ -208,10 +207,11 @@
         btnLoadYaDisk.style.display = "none";
       } else {
         btnLoadYaDisk.addEventListener("click", () => {
-          window.open(yadiskUrl, "_blank");
+          window.open(yadiskUrl, "yadisk", "width=700,height=500,left=100,top=100");
           if (btnLoadLocal) {
             btnLoadLocal.classList.add("pulse");
-            setTimeout(() => btnLoadLocal.classList.remove("pulse"), 8000);
+            /* пульсация не снимается по таймеру —
+               она исчезнет только когда файл будет загружен */
           }
           toast(
             "📥 Скачайте файл с Яндекс.Диска",
