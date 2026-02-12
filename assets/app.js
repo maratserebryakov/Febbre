@@ -123,28 +123,28 @@
     normalizeState(state);
 
     /* ── DOM refs ── */
-    const player        = $("#player");
-    const mediaPick     = $("#mediaPick");
-    const btnLoadLocal  = $("#btnLoadLocal");
-    const btnLoadYaDisk = $("#btnLoadYaDisk");
-    const lamp          = $("#mediaLamp");
-    const elNow         = $("#tNow");
-    const btnPlaySeg    = $("#btnPlaySeg");
-    const btnStart      = $("#btnStart");
-    const btnEnd        = $("#btnEnd");
-    const btnClear      = $("#btnClear");
-    const loopToggle    = $("#loopToggle");
+    const player         = $("#player");
+    const mediaPick      = $("#mediaPick");
+    const btnLoadLocal   = $("#btnLoadLocal");
+    const btnLoadYaDisk  = $("#btnLoadYaDisk");
+    const lamp           = $("#mediaLamp");
+    const elNow          = $("#tNow");
+    const btnPlaySeg     = $("#btnPlaySeg");
+    const btnStart       = $("#btnStart");
+    const btnEnd         = $("#btnEnd");
+    const btnClear       = $("#btnClear");
+    const loopToggle     = $("#loopToggle");
     const autoNextToggle = $("#autoNextToggle");
-    const jsonBox       = $("#jsonBox");
-    const btnExport     = $("#btnExport");
-    const btnImport     = $("#btnImport");
-    const btnReset      = $("#btnReset");
-    const filePick      = $("#filePick");
+    const jsonBox        = $("#jsonBox");
+    const btnExport      = $("#btnExport");
+    const btnImport      = $("#btnImport");
+    const btnReset       = $("#btnReset");
+    const filePick       = $("#filePick");
     const globalShowOrig  = $("#globalShowOrig");
     const globalShowTrans = $("#globalShowTrans");
     const globalShowPhon  = $("#globalShowPhon");
     const globalShowWhy   = $("#globalShowWhy");
-    const linesHost     = $("#lines");
+    const linesHost      = $("#lines");
 
     let activeIndex = 0;
     let loopTimer = null;
@@ -210,6 +210,14 @@
 
     applyPlayerMode("audio");
 
+    /* ── FIX pulse: убирать пульс только при реальной загрузке медиа ── */
+    function stopPulse() {
+      if (btnLoadLocal) btnLoadLocal.classList.remove("pulse");
+    }
+    function startPulse() {
+      if (btnLoadLocal) btnLoadLocal.classList.add("pulse");
+    }
+
     /* ── local file ── */
     if (btnLoadLocal) btnLoadLocal.addEventListener("click", () => mediaPick.click());
     mediaPick.addEventListener("change", () => {
@@ -222,11 +230,12 @@
       applyPlayerMode(mode);
       setSrc(url, "local");
       toast(mode === "video" ? "🎬 Открыто видео" : "🎵 Открыто аудио", f.name);
-      document.querySelectorAll(".pulse").forEach(el => el.classList.remove("pulse"));
+      /* FIX pulse: НЕ снимаем тут — ждём loadeddata */
     });
 
+    /* FIX pulse: снимаем пульс только когда медиа реально загрузилось */
     player.addEventListener("loadeddata", () => {
-      document.querySelectorAll(".pulse").forEach(el => el.classList.remove("pulse"));
+      stopPulse();
       if (player.videoHeight > 0) applyPlayerMode("video");
     });
 
@@ -238,7 +247,8 @@
       } else {
         btnLoadYaDisk.addEventListener("click", () => {
           window.open(yadiskUrl, "yadisk", "width=700,height=500,left=100,top=100");
-          if (btnLoadLocal) btnLoadLocal.classList.add("pulse");
+          /* FIX pulse: начинаем мигать */
+          startPulse();
           toast("📥 Скачайте файл с Яндекс.Диска", "Затем нажмите мигающую кнопку «📁 Выбрать файл»");
         });
       }
@@ -525,8 +535,6 @@
     [globalShowOrig, globalShowTrans, globalShowPhon, globalShowWhy].forEach(el => {
       if (el) el.addEventListener("change", renderLines);
     });
-
-    /* ── sticky: чистый CSS, JS dock не нужен ── */
 
     /* ── start ── */
     renderLines();
