@@ -28,13 +28,7 @@ h1 { margin: 0 0 6px; color: #c084fc; font-size: 22px; }
 h2 { color: #eaeaf0; }
 .hint { margin: 0 0 14px; color: #a1a1aa; line-height: 1.35; }
 
-/* ═══ Layout ═══ */
-.layout {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 14px;
-  align-items: start;
-}
+/* ═══ Panel ═══ */
 .panel {
   background: #15151b;
   border: 1px solid #2a2a35;
@@ -42,17 +36,47 @@ h2 { color: #eaeaf0; }
   padding: 12px;
 }
 
-/* ═══ Player wrap ═══ */
-.playerWrap {
+/* ═══════════════════════════════════════════════
+   LAYOUT — десктоп (>980px)
+   Две колонки: [dock + controls] слева, [phrases] справа
+   Вся левая колонка sticky
+   ═══════════════════════════════════════════════ */
+.layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  grid-template-rows: auto auto 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+/* A: dock — в первую колонку, первый ряд */
+.videoDock {
+  grid-column: 1;
+  grid-row: 1;
   position: sticky;
   top: 10px;
   z-index: 100;
-  align-self: start;
 }
 
-/* ═══ Video dock — только видео + кнопки загрузки ═══ */
-.videoDock {
-  position: relative;
+/* B: controls — в первую колонку, второй ряд */
+.playerControls {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+/* C: phrases — вторая колонка, растянуть на все ряды */
+#phrasesPanel {
+  grid-column: 2;
+  grid-row: 1 / 4;
+}
+
+/* ═══ Dock status bar (лампочка + таймер) ═══ */
+.dock-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 /* ═══ Player ═══ */
@@ -74,37 +98,40 @@ h2 { color: #eaeaf0; }
   border-radius: 12px;
 }
 
-/* ═══ Player controls ═══ */
-.playerControls { /* обычный поток */ }
-
-/* ══════════════════════════════════════════════
-   ПОРТРЕТ МОБИЛЬНЫЙ
-   ══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   ПОРТРЕТ МОБИЛЬНЫЙ (<980px portrait)
+   Одна колонка: dock sticky, controls скроллятся, phrases скроллятся
+   dock sticky-контейнер = .layout, а .layout тянется до конца phrases
+   ═══════════════════════════════════════════════ */
 @media (max-width: 980px) and (orientation: portrait) {
   .layout {
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
   }
 
-  /* Вся панель НЕ sticky */
-  .playerWrap {
-    position: static;
-    /* убираем padding/border чтобы dock мог тянуться на всю ширину */
-    padding: 0;
-    overflow: visible;
-  }
-
-  /* Только видео-блок прилипает к верху экрана */
+  /* A: dock — первая ячейка, sticky */
   .videoDock {
+    grid-column: 1;
+    grid-row: 1;
     position: sticky;
     top: 0;
     z-index: 120;
-    background: #15151b;
-    padding: 8px 12px;
-    border-bottom: 1px solid #2a2a35;
-    /* тянем на всю ширину панели: компенсируем скруглённые углы */
-    margin: -1px -1px 0 -1px;
-    border-radius: 14px 14px 0 0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    border-radius: 0 0 14px 14px;
+    margin: -18px -18px 0 -18px;   /* тянем на всю ширину body */
+    padding: 8px 18px 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  }
+
+  /* B: controls — вторая ячейка, обычный поток */
+  .playerControls {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  /* C: phrases — третья ячейка */
+  #phrasesPanel {
+    grid-column: 1;
+    grid-row: 3;
   }
 
   #player.is-video {
@@ -114,27 +141,31 @@ h2 { color: #eaeaf0; }
   #player.is-audio {
     height: 44px;
   }
-
-  /* Контролы получают собственный padding (т.к. у playerWrap padding: 0) */
-  .playerControls {
-    padding: 8px 12px 12px;
-  }
 }
 
-/* ══════════════════════════════════════════════
-   ЛАНДШАФТ МОБИЛЬНЫЙ
-   ══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   ЛАНДШАФТ МОБИЛЬНЫЙ (<980px landscape)
+   Две колонки: всё слева sticky, phrases справа
+   ═══════════════════════════════════════════════ */
 @media (max-width: 980px) and (orientation: landscape) {
   .layout {
     grid-template-columns: minmax(260px, 0.85fr) 1fr;
+    grid-template-rows: auto auto 1fr;
   }
-  .playerWrap {
+  .videoDock {
+    grid-column: 1;
+    grid-row: 1;
     position: sticky;
     top: 4px;
     z-index: 100;
-    max-height: 100vh;
-    overflow-y: auto;
-    align-self: start;
+  }
+  .playerControls {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  #phrasesPanel {
+    grid-column: 2;
+    grid-row: 1 / 4;
   }
   #player.is-video {
     height: 140px;
@@ -339,5 +370,6 @@ textarea { width: 100%; min-height: 110px; resize: vertical; }
 /* ═══ Author phonetic ═══ */
 .phon-author { color: #34d399; }
 
-/* ═══ Legacy sentinel ═══ */
+/* ═══ Legacy ═══ */
 .videoDockSentinel { display: none; }
+.playerWrap { /* legacy class — больше не используется в grid */ }
