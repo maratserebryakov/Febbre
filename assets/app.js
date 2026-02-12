@@ -188,7 +188,7 @@
       }, 300);
     }
 
-    /* ── local file ── */
+        /* ── local file ── */
     if (btnLoadLocal) btnLoadLocal.addEventListener("click", () => mediaPick.click());
     mediaPick.addEventListener("change", () => {
       const f = mediaPick.files?.[0];
@@ -198,7 +198,13 @@
       player._objUrl = url;
       setSrc(url, "local");
       toast("Открыт локальный файл", f.name);
-      if (btnLoadLocal) btnLoadLocal.classList.remove("pulse");
+      /* снимаем пульсацию с любого элемента */
+      document.querySelectorAll(".pulse").forEach(el => el.classList.remove("pulse"));
+    });
+
+    /* Страховка: снимаем пульсацию при любой успешной загрузке медиа */
+    player.addEventListener("loadeddata", () => {
+      document.querySelectorAll(".pulse").forEach(el => el.classList.remove("pulse"));
     });
     /* ── Yandex.Disk ── */
     if (btnLoadYaDisk) {
