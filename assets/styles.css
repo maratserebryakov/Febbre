@@ -273,10 +273,12 @@ textarea { width: 100%; min-height: 110px; resize: vertical; }
   .videoDock.isDocked #player.is-audio {
     height: 44px;
   }
-  .videoDock.isDocked #player.is-video {
+    .videoDock.isDocked #player.is-video {
     height: auto;
-    max-height: 35vh;
-  }
+    max-height: min(180px, 25vh);
+    object-fit: cover;
+    object-position: center 40%;
+    }
 }
 
 /* ═══ Lines (phrases) ═══ */
