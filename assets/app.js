@@ -590,17 +590,39 @@
       if (el) el.addEventListener("change", renderLines);
     });
 
-        /* ── video dock ── */
+            /* ── video dock ── */
     const dock = $("#videoDock");
     const sentinel = $("#videoDockSentinel");
     if (dock && sentinel && window.IntersectionObserver) {
+      let isDocked = false;
+
+      /* Фиксируем высоту sentinel когда dock прилипает,
+         чтобы контент не прыгал и не вызывал цикл */
+      function dockOn() {
+        if (isDocked) return;
+        isDocked = true;
+        /* замеряем высоту dock ДО того как он станет fixed */
+        const h = dock.offsetHeight;
+        sentinel.style.height = h + "px";
+        dock.classList.add("isDocked");
+      }
+
+      function dockOff() {
+        if (!isDocked) return;
+        isDocked = false;
+        dock.classList.remove("isDocked");
+        sentinel.style.height = "0";
+      }
+
+      /* Наблюдаем за sentinel — когда он уходит за верх экрана,
+         dock прилипает; когда возвращается — отлипает.
+         rootMargin: "10px" даёт гистерезис, убирая дёрганье */
       const obs = new IntersectionObserver(
         ([entry]) => {
-          const docked = !entry.isIntersecting;
-          dock.classList.toggle("isDocked", docked);
-          sentinel.style.height = docked ? dock.offsetHeight + "px" : "0";
+          if (!entry.isIntersecting) dockOn();
+          else dockOff();
         },
-        { threshold: 0 }
+        { threshold: 0, rootMargin: "10px 0px 0px 0px" }
       );
       obs.observe(sentinel);
     }
