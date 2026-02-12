@@ -48,60 +48,64 @@
 
 <div class="layout">
   <div class="panel playerWrap">
-    <div class="media-row">
-      <button class="ghost" id="btnLoadLocal">📁 Выбрать файл</button>
-      <input type="file" id="mediaPick" accept="audio/*,video/*" style="display:none" />
-      <button class="primary" id="btnLoadYaDisk">☁️ Яндекс.Диск</button>
-      <span class="lamp-wrap">
-        <span class="lamp-label">media</span>
-        <span id="mediaLamp" class="lamp lamp-off"></span>
-      </span>
-      <span class="pill">⏱ <span id="tNow" class="mono">0.00</span>s</span>
+
+    <!-- ▸ Блок 1: видео/аудио — прилипает в портрете -->
+    <div class="videoDock" id="videoDock">
+      <div class="media-row">
+        <button class="ghost" id="btnLoadLocal">📁 Выбрать файл</button>
+        <input type="file" id="mediaPick" accept="audio/*,video/*" style="display:none" />
+        <button class="primary" id="btnLoadYaDisk">☁️ Яндекс.Диск</button>
+        <span class="lamp-wrap">
+          <span class="lamp-label">media</span>
+          <span id="mediaLamp" class="lamp lamp-off"></span>
+        </span>
+        <span class="pill">⏱ <span id="tNow" class="mono">0.00</span>s</span>
+      </div>
+      <video id="player" controls preload="metadata" playsinline></video>
     </div>
 
-    <div id="videoDockSentinel" class="videoDockSentinel"></div>
-    <div id="videoDock" class="videoDock">
-      <video id="player" controls preload="metadata" style="width:100%;border-radius:12px;background:#000;"></video>
-    </div>
-
-    <div class="sep"></div>
-    <div id="segStatus"></div>
-    <div class="topbar">
-      <button class="warn" id="btnPlaySeg" disabled>▶ Фрагмент</button>
-      <button class="ghost" id="btnStart" disabled>⏱ Start</button>
-      <button class="ghost" id="btnEnd" disabled>⏱ End</button>
-      <button class="bad" id="btnClear" disabled>✕ Сброс</button>
-    </div>
-    <div class="topbar">
-      <label style="font-size:13px;cursor:pointer;user-select:none;">
-        <input type="checkbox" id="loopToggle" /> 🔁 Зациклить
-      </label>
-      <label style="font-size:13px;cursor:pointer;user-select:none;">
-        <input type="checkbox" id="autoNextToggle" /> ⏭ Авто
-      </label>
-    </div>
-
-    <div class="sep"></div>
-    <div class="toggleRow">
-  <label><input type="checkbox" id="globalShowOrig" /> 👁 Оригинал</label>
-  <label><input type="checkbox" id="globalShowPhon" /> 👂 Автор</label>
-  <label><input type="checkbox" id="globalShowTrans" /> 💬 Переводы</label>
-  <label><input type="checkbox" id="globalShowWhy" /> 🧠 Почему</label>
-</div>
-
-    <div class="sep"></div>
-    <details>
-      <summary class="mini" style="cursor:pointer;margin-bottom:8px;">🔧 JSON</summary>
-      <textarea id="jsonBox" placeholder="JSON…"></textarea>
-      <div class="topbar" style="margin-top:8px;">
-        <button class="ghost" id="btnExport">Экспорт</button>
-        <button class="ghost" id="btnImport">Импорт</button>
-        <button class="bad" id="btnReset">Сброс</button>
-        <label class="ghost" style="padding:8px 10px;border-radius:10px;cursor:pointer;">
-          📂 JSON <input type="file" id="filePick" accept=".json" style="display:none" />
+    <!-- ▸ Блок 2: контролы — уходят при скролле в портрете -->
+    <div class="playerControls">
+      <div class="sep"></div>
+      <div id="segStatus"></div>
+      <div class="topbar">
+        <button class="warn" id="btnPlaySeg" disabled>▶ Фрагмент</button>
+        <button class="ghost" id="btnStart" disabled>⏱ Start</button>
+        <button class="ghost" id="btnEnd" disabled>⏱ End</button>
+        <button class="bad" id="btnClear" disabled>✕ Сброс</button>
+      </div>
+      <div class="topbar">
+        <label style="font-size:13px;cursor:pointer;user-select:none;">
+          <input type="checkbox" id="loopToggle" /> 🔁 Зациклить
+        </label>
+        <label style="font-size:13px;cursor:pointer;user-select:none;">
+          <input type="checkbox" id="autoNextToggle" /> ⏭ Авто
         </label>
       </div>
-    </details>
+
+      <div class="sep"></div>
+      <div class="toggleRow">
+        <label><input type="checkbox" id="globalShowOrig" /> 👁 Оригинал</label>
+        <label><input type="checkbox" id="globalShowPhon" /> 👂 Автор</label>
+        <label><input type="checkbox" id="globalShowTrans" /> 💬 Переводы</label>
+        <label><input type="checkbox" id="globalShowWhy" /> 🧠 Почему</label>
+      </div>
+
+      <div class="sep"></div>
+      <details>
+        <summary class="mini" style="cursor:pointer;margin-bottom:8px;">🔧 JSON</summary>
+        <textarea id="jsonBox" placeholder="JSON…"></textarea>
+        <div class="topbar" style="margin-top:8px;">
+          <button class="ghost" id="btnExport">Экспорт</button>
+          <button class="ghost" id="btnImport">Импорт</button>
+          <button class="bad" id="btnReset">Сброс</button>
+          <label class="ghost" style="padding:8px 10px;border-radius:10px;cursor:pointer;">
+            📂 JSON <input type="file" id="filePick" accept=".json" style="display:none" />
+          </label>
+        </div>
+      </details>
+    </div>
+
   </div>
 
   <div class="panel" id="phrasesPanel">
