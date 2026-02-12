@@ -188,7 +188,34 @@
       }, 300);
     }
 
-        /* ── local file ── */
+            /* ── local file ── */
+    const AUDIO_EXT = /\.(mp3|m4a|ogg|wav|flac|aac|wma|opus|webm)$/i;
+    const VIDEO_EXT = /\.(mp4|mkv|webm|avi|mov|m4v|ogv)$/i;
+
+    function detectMediaType(filename, mimeType) {
+      if (mimeType) {
+        if (mimeType.startsWith("video/")) return "video";
+        if (mimeType.startsWith("audio/")) return "audio";
+      }
+      if (VIDEO_EXT.test(filename)) return "video";
+      if (AUDIO_EXT.test(filename)) return "audio";
+      return "video"; /* fallback: video handles both */
+    }
+
+    function applyPlayerMode(mode) {
+      if (mode === "video") {
+        player.classList.remove("is-audio");
+        player.classList.add("is-video");
+        player.removeAttribute("poster");
+      } else {
+        player.classList.remove("is-video");
+        player.classList.add("is-audio");
+      }
+    }
+
+    /* start in audio mode by default */
+    applyPlayerMode("audio");
+
     if (btnLoadLocal) btnLoadLocal.addEventListener("click", () => mediaPick.click());
     mediaPick.addEventListener("change", () => {
       const f = mediaPick.files?.[0];
@@ -196,15 +223,26 @@
       if (player._objUrl) { try { URL.revokeObjectURL(player._objUrl); } catch {} }
       const url = URL.createObjectURL(f);
       player._objUrl = url;
+
+      const mode = detectMediaType(f.name, f.type);
+      applyPlayerMode(mode);
+
       setSrc(url, "local");
-      toast("Открыт локальный файл", f.name);
-      /* снимаем пульсацию с любого элемента */
+      toast(
+        mode === "video" ? "🎬 Открыто видео" : "🎵 Открыто аудио",
+        f.name
+      );
       document.querySelectorAll(".pulse").forEach(el => el.classList.remove("pulse"));
     });
 
     /* Страховка: снимаем пульсацию при любой успешной загрузке медиа */
     player.addEventListener("loadeddata", () => {
       document.querySelectorAll(".pulse").forEach(el => el.classList.remove("pulse"));
+
+      /* Дополнительная проверка: если у видео есть видеодорожка */
+      if (player.videoHeight > 0) {
+        applyPlayerMode("video");
+      }
     });
     /* ── Yandex.Disk ── */
     if (btnLoadYaDisk) {
