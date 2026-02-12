@@ -72,19 +72,20 @@ h2 { color: #eaeaf0; }
 /* ═══ Player (video/audio universal) ═══ */
 #player {
   width: 100%;
-  border-radius: 12px;
-  background: #000;
-  transition: height 300ms ease;
+  display: block;
 }
 #player.is-audio {
-  height: 54px;
-  object-fit: contain;
+  height: 48px;
+  background: transparent;
+  border-radius: 0;
 }
 #player.is-video {
   height: auto;
   max-height: min(280px, 38vh);
   object-fit: cover;
   object-position: center 40%;
+  background: #000;
+  border-radius: 12px;
 }
 
 /* ═══ Buttons ═══ */
@@ -255,7 +256,7 @@ textarea { width: 100%; min-height: 110px; resize: vertical; }
 
 /* ═══ Video Dock ═══ */
 .videoDock { position: relative; border-radius: 12px; }
-.videoDockSentinel { height: 0; transition: height 200ms ease; }
+.videoDockSentinel { height: 0; }
 
 @media (max-width: 980px) {
   .videoDock.isDocked {
@@ -271,14 +272,13 @@ textarea { width: 100%; min-height: 110px; resize: vertical; }
     border-radius: 0;
   }
   .videoDock.isDocked #player.is-audio {
-    height: 44px;
+    height: 40px;
   }
-    .videoDock.isDocked #player.is-video {
-    height: auto;
+  .videoDock.isDocked #player.is-video {
     max-height: min(180px, 25vh);
     object-fit: cover;
     object-position: center 40%;
-    }
+  }
 }
 
 /* ═══ Lines (phrases) ═══ */
@@ -472,4 +472,4 @@ textarea { width: 100%; min-height: 110px; resize: vertical; }
 /* ═══ Author phonetic ═══ */
 .phon-author {
   color: #34d399;
-}
+  }
