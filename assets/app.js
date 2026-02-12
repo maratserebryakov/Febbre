@@ -188,7 +188,7 @@
       }, 300);
     }
 
-            /* ── local file ── */
+    /* ── local file ── */
     const AUDIO_EXT = /\.(mp3|m4a|ogg|wav|flac|aac|wma|opus|webm)$/i;
     const VIDEO_EXT = /\.(mp4|mkv|webm|avi|mov|m4v|ogv)$/i;
 
@@ -199,7 +199,7 @@
       }
       if (VIDEO_EXT.test(filename)) return "video";
       if (AUDIO_EXT.test(filename)) return "audio";
-      return "video"; /* fallback: video handles both */
+      return "video";
     }
 
     function applyPlayerMode(mode) {
@@ -235,15 +235,13 @@
       document.querySelectorAll(".pulse").forEach(el => el.classList.remove("pulse"));
     });
 
-    /* Страховка: снимаем пульсацию при любой успешной загрузке медиа */
     player.addEventListener("loadeddata", () => {
       document.querySelectorAll(".pulse").forEach(el => el.classList.remove("pulse"));
-
-      /* Дополнительная проверка: если у видео есть видеодорожка */
       if (player.videoHeight > 0) {
         applyPlayerMode("video");
       }
     });
+
     /* ── Yandex.Disk ── */
     if (btnLoadYaDisk) {
       const yadiskUrl = state.song?.media?.yadisk;
@@ -254,8 +252,6 @@
           window.open(yadiskUrl, "yadisk", "width=700,height=500,left=100,top=100");
           if (btnLoadLocal) {
             btnLoadLocal.classList.add("pulse");
-            /* пульсация не снимается по таймеру —
-               она исчезнет только когда файл будет загружен */
           }
           toast(
             "📥 Скачайте файл с Яндекс.Диска",
@@ -590,49 +586,16 @@
       if (el) el.addEventListener("change", renderLines);
     });
 
-            /* ── video dock ── */
-    const dock = $("#videoDock");
-    const sentinel = $("#videoDockSentinel");
-    if (dock && sentinel && window.IntersectionObserver) {
-      let isDocked = false;
-
-      /* Фиксируем высоту sentinel когда dock прилипает,
-         чтобы контент не прыгал и не вызывал цикл */
-      function dockOn() {
-        if (isDocked) return;
-        isDocked = true;
-        /* замеряем высоту dock ДО того как он станет fixed */
-        const h = dock.offsetHeight;
-        sentinel.style.height = h + "px";
-        dock.classList.add("isDocked");
-      }
-
-      function dockOff() {
-        if (!isDocked) return;
-        isDocked = false;
-        dock.classList.remove("isDocked");
-        sentinel.style.height = "0";
-      }
-
-      /* Наблюдаем за sentinel — когда он уходит за верх экрана,
-         dock прилипает; когда возвращается — отлипает.
-         rootMargin: "10px" даёт гистерезис, убирая дёрганье */
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry.isIntersecting) dockOn();
-          else dockOff();
-        },
-        { threshold: 0, rootMargin: "10px 0px 0px 0px" }
-      );
-      obs.observe(sentinel);
-    }
+    /* ── sticky player: чистый CSS, JS dock не нужен ── */
+    /* position: sticky в .playerWrap делает всё сам,
+       без IntersectionObserver, без sentinel, без дёрганья */
 
     /* ── start ── */
     renderLines();
     setActive(0, false);
-      /* ── keyboard shortcuts ── */
+
+    /* ── keyboard shortcuts ── */
     document.addEventListener("keydown", (e) => {
-      // Не перехватывать, если фокус в текстовом поле
       const tag = (e.target.tagName || "").toLowerCase();
       if (tag === "input" || tag === "textarea" || tag === "select") return;
 
@@ -653,7 +616,6 @@
       if (key === "e") {
         e.preventDefault();
         btnEnd.click();
-        // Автопереход к следующей строке
         const next = Math.min(activeIndex + 1, state.items.length - 1);
         if (next !== activeIndex) {
           setTimeout(() => setActive(next, false), 100);
@@ -679,7 +641,6 @@
       }
     });
 
-    /* ── hint about shortcuts ── */
     toast("⌨ Горячие клавиши: S=Start, E=End, Space=Play, ↑↓=строки, R=фрагмент");
   }
 
