@@ -55,9 +55,6 @@ h2 { color: #eaeaf0; }
   gap: 14px;
   align-items: start;
 }
-@media (max-width: 980px) {
-  .layout { grid-template-columns: 1fr; }
-}
 
 .panel {
   background: #15151b;
@@ -66,8 +63,54 @@ h2 { color: #eaeaf0; }
   padding: 12px;
 }
 
-.playerWrap { position: sticky; top: 10px; }
-@media (max-width: 980px) { .playerWrap { position: static; } }
+/* Плеер всегда sticky */
+.playerWrap {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  align-self: start;
+}
+
+/* ═══ Портрет мобильный (узкий экран) ═══ */
+@media (max-width: 980px) and (orientation: portrait) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .playerWrap {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin: -12px -12px 12px -12px;
+    padding: 8px 12px;
+    background: #15151b;
+    border-bottom: 1px solid #2a2a35;
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ═══ Ландшафт мобильный ═══ */
+@media (max-width: 980px) and (orientation: landscape) {
+  .layout {
+    grid-template-columns: minmax(280px, 0.9fr) 1fr;
+  }
+  .playerWrap {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    max-height: 100vh;
+    overflow-y: auto;
+    align-self: start;
+  }
+}
+
+/* ═══ Десктоп ═══ */
+@media (min-width: 981px) {
+  .playerWrap {
+    position: sticky;
+    top: 10px;
+  }
+}
 
 /* ═══ Player (video/audio universal) ═══ */
 #player {
@@ -86,6 +129,13 @@ h2 { color: #eaeaf0; }
   object-position: center 40%;
   background: #000;
   border-radius: 12px;
+}
+
+/* Ландшафт — видео компактнее */
+@media (max-width: 980px) and (orientation: landscape) {
+  #player.is-video {
+    max-height: min(200px, 55vh);
+  }
 }
 
 /* ═══ Buttons ═══ */
@@ -254,32 +304,9 @@ textarea { width: 100%; min-height: 110px; resize: vertical; }
 }
 .js #jsNotRunning { display: none; }
 
-/* ═══ Video Dock ═══ */
-.videoDock { position: relative; border-radius: 12px; }
+/* ═══ Video Dock (legacy class — kept for JS compat) ═══ */
+.videoDock { position: relative; }
 .videoDockSentinel { height: 0; }
-
-@media (max-width: 980px) {
-  .videoDock.isDocked {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 120;
-    background: #15151b;
-    border-bottom: 1px solid #2a2a35;
-    padding: 6px 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-    border-radius: 0;
-  }
-  .videoDock.isDocked #player.is-audio {
-    height: 40px;
-  }
-  .videoDock.isDocked #player.is-video {
-    max-height: min(180px, 25vh);
-    object-fit: cover;
-    object-position: center 40%;
-  }
-}
 
 /* ═══ Lines (phrases) ═══ */
 .line {
