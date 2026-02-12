@@ -69,8 +69,21 @@ h2 { color: #eaeaf0; }
 .playerWrap { position: sticky; top: 10px; }
 @media (max-width: 980px) { .playerWrap { position: static; } }
 
-#player { width: 100%; border-radius: 12px; background: #000; }
-
+#player {
+  width: 100%;
+  border-radius: 12px;
+  background: #000;
+  transition: height 300ms ease;
+}
+#player.is-audio {
+  height: 54px;
+  object-fit: contain;
+}
+#player.is-video {
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+}
 /* ═══ Buttons ═══ */
 button {
   border: 0;
