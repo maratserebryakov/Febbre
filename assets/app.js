@@ -552,12 +552,16 @@
       if (el) el.addEventListener("change", renderLines);
     });
 
-    /* ── video dock ── */
+        /* ── video dock ── */
     const dock = $("#videoDock");
     const sentinel = $("#videoDockSentinel");
     if (dock && sentinel && window.IntersectionObserver) {
       const obs = new IntersectionObserver(
-        ([entry]) => dock.classList.toggle("isDocked", !entry.isIntersecting),
+        ([entry]) => {
+          const docked = !entry.isIntersecting;
+          dock.classList.toggle("isDocked", docked);
+          sentinel.style.height = docked ? dock.offsetHeight + "px" : "0";
+        },
         { threshold: 0 }
       );
       obs.observe(sentinel);
