@@ -63,40 +63,34 @@ h2 { color: #eaeaf0; }
   padding: 12px;
 }
 
-/* Плеер всегда sticky */
+/* ═══ Player wrap: адаптация под ориентацию ═══ */
+
+/* Десктоп: sticky слева */
 .playerWrap {
   position: sticky;
-  top: 0;
+  top: 10px;
   z-index: 100;
   align-self: start;
 }
 
-/* ═══ Портрет мобильный (узкий экран) ═══ */
+/* Портрет мобильный: одна колонка, плеер НЕ sticky — скроллится */
 @media (max-width: 980px) and (orientation: portrait) {
   .layout {
     grid-template-columns: 1fr;
   }
   .playerWrap {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    margin: -12px -12px 12px -12px;
-    padding: 8px 12px;
-    background: #15151b;
-    border-bottom: 1px solid #2a2a35;
-    border-radius: 14px 14px 0 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    position: static;
   }
 }
 
-/* ═══ Ландшафт мобильный ═══ */
+/* Ландшафт мобильный: две колонки, плеер sticky слева */
 @media (max-width: 980px) and (orientation: landscape) {
   .layout {
-    grid-template-columns: minmax(280px, 0.9fr) 1fr;
+    grid-template-columns: minmax(260px, 0.85fr) 1fr;
   }
   .playerWrap {
     position: sticky;
-    top: 0;
+    top: 4px;
     z-index: 100;
     max-height: 100vh;
     overflow-y: auto;
@@ -104,15 +98,7 @@ h2 { color: #eaeaf0; }
   }
 }
 
-/* ═══ Десктоп ═══ */
-@media (min-width: 981px) {
-  .playerWrap {
-    position: sticky;
-    top: 10px;
-  }
-}
-
-/* ═══ Player (video/audio universal) ═══ */
+/* ═══ Player (video/audio) ═══ */
 #player {
   width: 100%;
   display: block;
@@ -124,17 +110,24 @@ h2 { color: #eaeaf0; }
 }
 #player.is-video {
   height: auto;
-  max-height: min(280px, 38vh);
+  max-height: min(240px, 35vh);
   object-fit: cover;
   object-position: center 40%;
   background: #000;
   border-radius: 12px;
 }
 
-/* Ландшафт — видео компактнее */
+/* Портрет мобильный — видео ещё компактнее */
+@media (max-width: 980px) and (orientation: portrait) {
+  #player.is-video {
+    max-height: min(200px, 28vh);
+  }
+}
+
+/* Ландшафт мобильный — видео подстраивается под высоту */
 @media (max-width: 980px) and (orientation: landscape) {
   #player.is-video {
-    max-height: min(200px, 55vh);
+    max-height: min(160px, 45vh);
   }
 }
 
@@ -304,7 +297,7 @@ textarea { width: 100%; min-height: 110px; resize: vertical; }
 }
 .js #jsNotRunning { display: none; }
 
-/* ═══ Video Dock (legacy class — kept for JS compat) ═══ */
+/* ═══ Video Dock (legacy — не используется) ═══ */
 .videoDock { position: relative; }
 .videoDockSentinel { height: 0; }
 
@@ -499,4 +492,4 @@ textarea { width: 100%; min-height: 110px; resize: vertical; }
 /* ═══ Author phonetic ═══ */
 .phon-author {
   color: #34d399;
-  }
+}
