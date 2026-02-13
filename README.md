@@ -254,5 +254,5 @@ maratserebryakov.github.io/Febbre/
 
 ---
 
-Сделано с 🎧 [Marat Serebryakov](https://maratserebryakov.github.io/Febbre/)
+Сделано с 🎧 [Marat Serebryakov](https://maratserebryakov.github.io)
 ```
